@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.capital.mapper.CapitalPayLogMapper">
+    
+    <resultMap type="CapitalPayLog" id="CapitalPayLogResult">
+        <result property="id"    column="id"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="merId"    column="mer_id"    />
+        <result property="recCapitalAccId"    column="rec_capital_acc_id"    />
+        <result property="recCapitalAccNo"    column="rec_capital_acc_no"    />
+        <result property="merName"    column="mer_name"    />
+        <result property="recCapitalAccName"    column="rec_capital_acc_name"    />
+        <result property="payCapitalAccId"    column="pay_capital_acc_id"    />
+        <result property="payCapitalAccNo"    column="pay_capital_acc_no"    />
+        <result property="payCapitalAccName"    column="pay_capital_acc_name"    />
+        <result property="amt"    column="amt"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="auditTime"    column="audit_time"    />
+        <result property="status"    column="status"    />
+        <result property="type"    column="type"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="companyName"    column="company_name"    />
+    </resultMap>
+
+    <sql id="selectCapitalPayLogVo">
+        select id, company_id,company_name,channel_id, channel_name, mer_id, rec_capital_acc_id, rec_capital_acc_no, mer_name, rec_capital_acc_name, pay_capital_acc_id, pay_capital_acc_no, pay_capital_acc_name, amt, create_time, update_time,audit_time, status,type from capital_pay_log
+    </sql>
+    <select id="selectCapitalTotalToday" parameterType="CapitalPayLog" resultMap="CapitalPayLogResult">
+      SELECT IFNULL(sum(amt),0) as amt from capital_pay_log where
+      to_days(create_time)=to_days(now()) and status=1
+      and mer_id = #{merId} and channel_id=#{channelId}
+    </select>
+    <select id="selectCapitalTotalYes" parameterType="CapitalPayLog" resultMap="CapitalPayLogResult">
+      SELECT IFNULL(sum(amt),0) as amt from capital_pay_log where
+      date(create_time) = date_sub(curdate(),interval 1 day) and status=1
+      and mer_id = #{merId} and channel_id=#{channelId}
+    </select>
+    <select id="selectCapitalPayLogList" parameterType="CapitalPayLog" resultMap="CapitalPayLogResult">
+        <include refid="selectCapitalPayLogVo"/>
+        <where>  
+            <if test="channelId != null "> and channel_id = #{channelId}</if>
+            <if test="channelName != null  and channelName != ''"> and channel_name like concat('%', #{channelName}, '%')</if>
+            <if test="merId != null "> and mer_id = #{merId}</if>
+            <if test="recCapitalAccId != null "> and rec_capital_acc_id = #{recCapitalAccId}</if>
+            <if test="recCapitalAccNo != null  and recCapitalAccNo != ''"> and rec_capital_acc_no = #{recCapitalAccNo}</if>
+            <if test="merName != null  and merName != ''"> and mer_name like concat('%', #{merName}, '%')</if>
+            <if test="recCapitalAccName != null  and recCapitalAccName != ''"> and rec_capital_acc_name like concat('%', #{recCapitalAccName}, '%')</if>
+            <if test="payCapitalAccId != null "> and pay_capital_acc_id = #{payCapitalAccId}</if>
+            <if test="payCapitalAccNo != null  and payCapitalAccNo != ''"> and pay_capital_acc_no = #{payCapitalAccNo}</if>
+            <if test="payCapitalAccName != null  and payCapitalAccName != ''"> and pay_capital_acc_name like concat('%', #{payCapitalAccName}, '%')</if>
+            <if test="amt != null "> and amt = #{amt}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="startTime != null "> and create_time &gt;= #{startTime}</if>
+            <if test="endTime != null "> and create_time &lt;= #{endTime}</if>
+            <if test="companyId != null "> and company_id = #{companyId}</if>
+            <if test="companyName != null "> and company_name = #{companyName}</if>
+            <if test="type != null "> and type = #{type}</if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectCapitalPayLogById" parameterType="Long" resultMap="CapitalPayLogResult">
+        <include refid="selectCapitalPayLogVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCapitalPayLog" parameterType="CapitalPayLog">
+        insert into capital_pay_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="channelId != null">channel_id,</if>
+            <if test="channelName != null">channel_name,</if>
+            <if test="merId != null">mer_id,</if>
+            <if test="recCapitalAccId != null">rec_capital_acc_id,</if>
+            <if test="recCapitalAccNo != null">rec_capital_acc_no,</if>
+            <if test="merName != null">mer_name,</if>
+            <if test="recCapitalAccName != null">rec_capital_acc_name,</if>
+            <if test="payCapitalAccId != null">pay_capital_acc_id,</if>
+            <if test="payCapitalAccNo != null">pay_capital_acc_no,</if>
+            <if test="payCapitalAccName != null">pay_capital_acc_name,</if>
+            <if test="amt != null">amt,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="auditTime != null">audit_time,</if>
+            <if test="status != null">status,</if>
+            <if test="type != null">type,</if>
+            <if test="companyId != null">company_id,</if>
+            <if test="companyName != null">company_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="channelId != null">#{channelId},</if>
+            <if test="channelName != null">#{channelName},</if>
+            <if test="merId != null">#{merId},</if>
+            <if test="recCapitalAccId != null">#{recCapitalAccId},</if>
+            <if test="recCapitalAccNo != null">#{recCapitalAccNo},</if>
+            <if test="merName != null">#{merName},</if>
+            <if test="recCapitalAccName != null">#{recCapitalAccName},</if>
+            <if test="payCapitalAccId != null">#{payCapitalAccId},</if>
+            <if test="payCapitalAccNo != null">#{payCapitalAccNo},</if>
+            <if test="payCapitalAccName != null">#{payCapitalAccName},</if>
+            <if test="amt != null">#{amt},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="auditTime != null">#{auditTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="type != null">#{type},</if>
+            <if test="companyId != null">#{companyId},</if>
+            <if test="companyName != null">#{companyName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCapitalPayLog" parameterType="CapitalPayLog">
+        update capital_pay_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="channelName != null">channel_name = #{channelName},</if>
+            <if test="merId != null">mer_id = #{merId},</if>
+            <if test="recCapitalAccId != null">rec_capital_acc_id = #{recCapitalAccId},</if>
+            <if test="recCapitalAccNo != null">rec_capital_acc_no = #{recCapitalAccNo},</if>
+            <if test="merName != null">mer_name = #{merName},</if>
+            <if test="recCapitalAccName != null">rec_capital_acc_name = #{recCapitalAccName},</if>
+            <if test="payCapitalAccId != null">pay_capital_acc_id = #{payCapitalAccId},</if>
+            <if test="payCapitalAccNo != null">pay_capital_acc_no = #{payCapitalAccNo},</if>
+            <if test="payCapitalAccName != null">pay_capital_acc_name = #{payCapitalAccName},</if>
+            <if test="amt != null">amt = #{amt},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="auditTime != null">audit_time = #{auditTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCapitalPayLogById" parameterType="Long">
+        delete from capital_pay_log where id = #{id}
+    </delete>
+
+    <delete id="deleteCapitalPayLogByIds" parameterType="String">
+        delete from capital_pay_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.channel.mapper.ChannelSettingInfoMapper">
+    
+    <resultMap type="ChannelSettingInfo" id="ChannelSettingInfoResult">
+        <result property="id"    column="id"    />
+        <result property="channelCode"    column="channel_code"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="appid"    column="appid"    />
+        <result property="signType"    column="sign_type"    />
+        <result property="md5Key"    column="md5_key"    />
+        <result property="rsaPublicKey"    column="rsa_public_key"    />
+        <result property="rsaPrivateKey"    column="rsa_private_key"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="status"    column="status"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="channelName"    column="channel_name"    />
+    </resultMap>
+
+    <sql id="selectChannelSettingInfoVo">
+        select id, channel_code, channel_id, company_id,company_name,channel_name, appid, sign_type, md5_key, rsa_public_key, rsa_private_key, create_time, update_time, status from channel_setting_info
+    </sql>
+
+    <select id="selectChannelSettingInfoList" parameterType="ChannelSettingInfo" resultMap="ChannelSettingInfoResult">
+        <include refid="selectChannelSettingInfoVo"/>
+        <where>  
+            <if test="channelCode != null  and channelCode != ''"> and channel_code = #{channelCode}</if>
+            <if test="md5Key != null  and md5Key != ''"> and md5_key = #{md5Key}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="companyId != null "> and company_id = #{companyId}</if>
+            <if test="channelId != null "> and channel_id = #{channelId}</if>
+        </where>
+    </select>
+    
+    <select id="selectChannelSettingInfoById" parameterType="Long" resultMap="ChannelSettingInfoResult">
+        <include refid="selectChannelSettingInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertChannelSettingInfo" parameterType="ChannelSettingInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into channel_setting_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="channelCode != null and channelCode != ''">channel_code,</if>
+            <if test="channelId != null">channel_id,</if>
+            <if test="companyId != null">company_id,</if>
+            <if test="appid != null and appid != ''">appid,</if>
+            <if test="signType != null">sign_type,</if>
+            <if test="md5Key != null">md5_key,</if>
+            <if test="rsaPublicKey != null">rsa_public_key,</if>
+            <if test="rsaPrivateKey != null">rsa_private_key,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="status != null">status,</if>
+            <if test="channelName != null">channel_name,</if>
+            <if test="companyName != null">company_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="channelCode != null and channelCode != ''">#{channelCode},</if>
+            <if test="channelId != null">#{channelId},</if>
+            <if test="companyId != null">#{companyId},</if>
+            <if test="appid != null and appid != ''">#{appid},</if>
+            <if test="signType != null">#{signType},</if>
+            <if test="md5Key != null">#{md5Key},</if>
+            <if test="rsaPublicKey != null">#{rsaPublicKey},</if>
+            <if test="rsaPrivateKey != null">#{rsaPrivateKey},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="channelName != null">#{channelName},</if>
+            <if test="companyName != null">#{companyName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChannelSettingInfo" parameterType="ChannelSettingInfo">
+        update channel_setting_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="channelCode != null and channelCode != ''">channel_code = #{channelCode},</if>
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="companyId != null">company_id = #{companyId},</if>
+            <if test="appid != null and appid != ''">appid = #{appid},</if>
+            <if test="signType != null">sign_type = #{signType},</if>
+            <if test="md5Key != null">md5_key = #{md5Key},</if>
+            <if test="rsaPublicKey != null">rsa_public_key = #{rsaPublicKey},</if>
+            <if test="rsaPrivateKey != null">rsa_private_key = #{rsaPrivateKey},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChannelSettingInfoById" parameterType="Long">
+        delete from channel_setting_info where id = #{id}
+    </delete>
+
+    <delete id="deleteChannelSettingInfoByIds" parameterType="String">
+        delete from channel_setting_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

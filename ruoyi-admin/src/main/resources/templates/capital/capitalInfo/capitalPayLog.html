@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('资金转账记录列表')" />
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId" th:object="${capitalInfo}">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <input type="text" name="channelId" th:field="*{channelId}" style="display:none"/>
+                        </li>
+                        <li>
+                            <input type="text" name="merId" th:field="*{merId}" style="display:none"/>
+                        </li>
+                        <li>
+                            <input type="text" name="companyId" th:field="*{companyId}" style="display:none"/>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+        <div class="container-div">
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('capital:capitalPayLog:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('capital:capitalPayLog:remove')}]];
+    var prefix = ctx + "capital/capitalPayLog";
+    var statusDatas = [[${@dict.getType('amt_audit_status')}]];
+    $(function() {
+        var options = {
+            url: prefix + "/listPay",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "资金转账记录",
+
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: '',
+                    visible: false
+                },
+                {
+                    field: 'merName',
+                    title: '商户名'
+                },
+                {
+                    field: 'payCapitalAccNo',
+                    title: '付款账户'
+                },
+                {
+                    field: 'payCapitalAccName',
+                    title: '付款账户名'
+                },
+                {
+                    field: 'companyName',
+                    title: '公司名'
+                },
+                {
+                    field: 'recCapitalAccName',
+                    title: '收款账号名'
+                },
+                {
+                    field: 'recCapitalAccNo',
+                    title: '收款账号'
+                },
+
+                {
+                    field: 'amt',
+                    title: '金额'
+                },
+                {
+                    field: 'createTime',
+                    title: '创建时间'
+                },
+                {
+                    field: 'status',
+                    title: '状态',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(statusDatas, value);
+                    }
+                },
+            ]
+        };
+        $.table.init(options);
+    });
+</script>
+</body>
+</html>

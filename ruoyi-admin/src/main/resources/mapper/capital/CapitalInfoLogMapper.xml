@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.capital.mapper.CapitalInfoLogMapper">
+    
+    <resultMap type="CapitalInfoLog" id="CapitalInfoLogResult">
+        <result property="id"    column="id"    />
+        <result property="successAmt"    column="success_amt"    />
+        <result property="unpaidAmt"    column="unpaid_amt"    />
+        <result property="paidAmt"    column="paid_amt"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="status"    column="status"    />
+        <result property="merId"    column="mer_id"    />
+        <result property="merName"    column="mer_name"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="logDate"    column="log_date"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="companyName"    column="company_name"    />
+    </resultMap>
+
+    <sql id="selectCapitalInfoLogVo">
+        select id, company_id,company_name,success_amt, unpaid_amt, paid_amt, update_time, status, mer_id, mer_name, channel_id, channel_name, create_time, log_date from capital_info_log
+    </sql>
+    <select id="selectCapitalTotal" parameterType="CapitalInfoLog" resultMap="CapitalInfoLogResult">
+        SELECT IFNULL(sum(success_amt),0) as success_amt,IFNULL(sum(unpaid_amt),0) as unpaid_amt,IFNULL(sum(paid_amt),0) as paid_amt
+        from capital_info_log where mer_id=#{merId} and channel_id=#{channelId}
+    </select>
+    <select id="selectCapitalInfoLogList" parameterType="CapitalInfoLog" resultMap="CapitalInfoLogResult">
+        <include refid="selectCapitalInfoLogVo"/>
+
+        <where>
+            date_sub(curdate(), INTERVAL 30 DAY)  &lt;= date(create_time)
+            <if test="merId != null "> and mer_id = #{merId}</if>
+            <if test="channelId != null "> and channel_id = #{channelId}</if>
+            <if test="successAmt != null "> and success_amt = #{successAmt}</if>
+            <if test="unpaidAmt != null "> and unpaid_amt = #{unpaidAmt}</if>
+            <if test="paidAmt != null "> and paid_amt = #{paidAmt}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="merName != null  and merName != ''"> and mer_name like concat('%', #{merName}, '%')</if>
+            <if test="channelName != null  and channelName != ''"> and channel_name like concat('%', #{channelName}, '%')</if>
+            <if test="logDate != null  and logDate != ''"> and log_date = #{logDate}</if>
+            <if test="companyId != null "> and company_id = #{companyId}</if>
+            <if test="companyName != null "> and company_name = #{companyName}</if>
+        </where>
+         order by create_time desc
+    </select>
+    
+    <select id="selectCapitalInfoLogById" parameterType="Long" resultMap="CapitalInfoLogResult">
+        <include refid="selectCapitalInfoLogVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCapitalInfoLog" parameterType="CapitalInfoLog">
+        insert into capital_info_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="successAmt != null">success_amt,</if>
+            <if test="unpaidAmt != null">unpaid_amt,</if>
+            <if test="paidAmt != null">paid_amt,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="status != null">status,</if>
+            <if test="merId != null">mer_id,</if>
+            <if test="merName != null">mer_name,</if>
+            <if test="channelId != null">channel_id,</if>
+            <if test="channelName != null">channel_name,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="logDate != null">log_date,</if>
+            <if test="companyId != null">company_id,</if>
+            <if test="companyName != null">company_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="successAmt != null">#{successAmt},</if>
+            <if test="unpaidAmt != null">#{unpaidAmt},</if>
+            <if test="paidAmt != null">#{paidAmt},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="merId != null">#{merId},</if>
+            <if test="merName != null">#{merName},</if>
+            <if test="channelId != null">#{channelId},</if>
+            <if test="channelName != null">#{channelName},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="logDate != null">#{logDate},</if>
+            <if test="companyId != null">#{companyId},</if>
+            <if test="companyName != null">#{companyName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCapitalInfoLog" parameterType="CapitalInfoLog">
+        update capital_info_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="successAmt != null">success_amt = #{successAmt},</if>
+            <if test="unpaidAmt != null">unpaid_amt = #{unpaidAmt},</if>
+            <if test="paidAmt != null">paid_amt = #{paidAmt},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="merId != null">mer_id = #{merId},</if>
+            <if test="merName != null">mer_name = #{merName},</if>
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="channelName != null">channel_name = #{channelName},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="logDate != null">log_date = #{logDate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCapitalInfoLogById" parameterType="Long">
+        delete from capital_info_log where id = #{id}
+    </delete>
+
+    <delete id="deleteCapitalInfoLogByIds" parameterType="String">
+        delete from capital_info_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

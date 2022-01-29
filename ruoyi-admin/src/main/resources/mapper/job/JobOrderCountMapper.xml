@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.channel.mapper.JobOrderCountMapper">
+    
+    <resultMap type="JobOrderCount" id="JobOrderCountResult">
+        <result property="id"    column="id"    />
+        <result property="orderCount"    column="order_count"    />
+        <result property="amt"    column="amt"    />
+        <result property="service"    column="service"    />
+        <result property="status"    column="status"    />
+        <result property="skuId"    column="sku_id"    />
+    </resultMap>
+
+    <sql id="selectJobOrderCountVo">
+        select id, order_count,amt,service,status,sku_id from job_order_count
+    </sql>
+
+    <select id="selectJobOrderCountList" parameterType="JobOrderCount" resultMap="JobOrderCountResult">
+        <include refid="selectJobOrderCountVo"/>
+        <where>  
+            <if test="orderCount != null "> and order_count = #{orderCount}</if>
+        </where>
+    </select>
+    
+    <select id="selectJobOrderCountById" parameterType="Long" resultMap="JobOrderCountResult">
+        <include refid="selectJobOrderCountVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertJobOrderCount" parameterType="JobOrderCount">
+        insert into job_order_count
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="orderCount != null">order_count,</if>
+            <if test="service != null">service,</if>
+            <if test="status != null">status,</if>
+            <if test="skuId != null">sku_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="orderCount != null">#{orderCount},</if>
+            <if test="service != null">#{service},</if>
+            <if test="status != null">#{status},</if>
+            <if test="skuId != null">#{skuId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateJobOrderCount" parameterType="JobOrderCount">
+        update job_order_count
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderCount != null">order_count = #{orderCount},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="skuId != null">sku_id = #{skuId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteJobOrderCountById" parameterType="Long">
+        delete from job_order_count where id = #{id}
+    </delete>
+
+    <delete id="deleteJobOrderCountByIds" parameterType="String">
+        delete from job_order_count where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('新增余额')" />
+</head>
+<body>
+    <div class="main-content">
+        <form id="form-user-add" class="form-horizontal">
+            <div class="row" >
+            	<div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label is-required">通道名称：</label>
+                        <div class="col-sm-8">
+                            <input readonly="readonly" th:value="${channelInfo.channelName}" class="form-control" type="text">
+                            <input name="id" id="id" type="hidden" th:value="${channelInfo.id}">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label is-required">新增余额：</label>
+                        <div class="col-sm-8">
+                            	<input name="amount" id="amount" placeholder="请输入新增余额" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+	<th:block th:include="include :: footer" />
+	<script th:inline="javascript">
+        $("#form-user-add").validate({
+            focusCleanup: true
+        });
+
+        function formData() {
+            var data=$('#form-user-add').serialize();
+            return data;
+            
+        }
+    </script>
+</body>
+</html>

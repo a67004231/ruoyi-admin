@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('通道信息列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>公司：</label>
+                                <select name="companyId">
+                                    <option value="">所有</option>
+                                    <option th:each="company : ${companyList}" th:text="${company.companyName}" th:value="${company.id}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>通道编码：</label>
+                                <input type="text" name="channelCode"/>
+                            </li>
+                            <li>
+                                <label>通道名称：</label>
+                                <input type="text" name="channelName"/>
+                            </li>
+
+                            <li>
+                                <label>通道状态：</label>
+                                <select name="status" th:with="type=${@dict.getType('all_status')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="channel:info:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+<!--                 <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="channel:info:edit"> -->
+<!--                     <i class="fa fa-edit"></i> 修改 -->
+<!--                 </a> -->
+<!--                 <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="channel:info:remove"> -->
+<!--                     <i class="fa fa-remove"></i> 删除 -->
+<!--                 </a> -->
+<!--                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="channel:info:export"> -->
+<!--                     <i class="fa fa-download"></i> 导出 -->
+<!--                 </a> -->
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('channel:info:edit')}]];
+        var addFlag = [[${@permission.hasPermi('channel:info:add')}]];
+        var removeFlag = [[${@permission.hasPermi('channel:info:remove')}]];
+        var statusDatas = [[${@dict.getType('all_status')}]];
+        var amountFlag = [[${@permission.hasPermi('channel:info:amount')}]];
+        var prefix = ctx + "channel/info";
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "通道信息",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'companyName',
+                    title: '公司名称'
+                },
+                {
+                    field: 'channelCode',
+                    title: '通道编码'
+                },
+                {
+                    field: 'channelName',
+                    title: '通道名称'
+                },
+                    {
+                        field: 'channelShortName',
+                        title: '通道简称'
+                    },
+                {
+                    field: 'createTime',
+                    title: '创建时间'
+                },
+                {
+                    field: 'creditAmt',
+                    title: '授信总额'
+                },
+                {
+                    field: 'creditUseAmt',
+                    title: '授信使用额'
+                },
+                {
+                    field: 'creditBalanceAmt',
+                    title: '授信余额'
+                },
+                {
+                    field: 'creditFixAmt',
+                    title: '授信处理额'
+                },
+                    {
+                        visible: editFlag == 'hidden' ? false : true,
+                        title: '通道状态',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return statusTools(row);
+                        }
+                    },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + amountFlag + '" href="javascript:void(0)" onclick="addAmount(\'' + row.id + '\')"><i class="fa fa-"></i>增加授信额</a> ');
+                        actions.push('<a class="btn btn-success btn-xs ' + amountFlag + '" href="javascript:void(0)" onclick="reduceAmount(\'' + row.id + '\')"><i class="fa fa-"></i>减少授信额</a> ');
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+
+        function addAmount(id){
+            $.modal.open('添加授信额', prefix + "/addAmount?id="+id, '900', '320', addcallback);
+        }
+        function reduceAmount(id){
+            $.modal.open('减少授信额', prefix + "/reduceAmount?id="+id, '900', '320', reducecallback);
+        }
+        function addcallback(index, layero) {
+            var dataParam=$(layero).find("iframe")[0].contentWindow.formData();
+            $.post(prefix + "/addSaveAmount",dataParam,function(result){
+                layer.alert(result,function(){
+                    window.parent.location.reload();//刷新父页面
+                    parent.layer.close(index);//关闭弹出层
+                });
+            });
+        }
+        function reducecallback(index, layero) {
+            var dataParam=$(layero).find("iframe")[0].contentWindow.formData();
+            $.post(prefix + "/reduceSaveAmount",dataParam,function(result){
+                layer.alert(result,function(){
+                    window.parent.location.reload();//刷新父页面
+                    parent.layer.close(index);//关闭弹出层
+                });
+            });
+        }
+        /* 状态显示 */
+        function statusTools(row) {
+            if (row.status == 0) {
+                return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.id + '\')"></i> ';
+            } else if(row.status == 1) {
+                return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.id + '\')"></i> ';
+            }
+        }
+
+        /* 管理-停用 */
+        function disable(id) {
+            $.modal.confirm("确认要停用通道吗？", function() {
+                $.operate.post(prefix + "/changeStatus", { "id": id, "status": 0 });
+            })
+        }
+
+        /* 管理启用 */
+        function enable(id) {
+            $.modal.confirm("确认要启用通道吗？", function() {
+                $.operate.post(prefix + "/changeStatus", { "id": id, "status": 1 });
+            })
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改抢单并发量')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-count-edit" th:object="${jobOrderCount}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">订单金额：</label>
+                <div class="col-sm-8">
+                    <input name="amt" th:field="*{amt}" readonly="readonly" class="form-control" type="text">
+                </div>
+                <label class="col-sm-3 control-label">运营商：</label>
+                <div class="col-sm-8">
+                    <input name="service" th:field="*{service}" readonly="readonly" class="form-control" type="text">
+                </div>
+                <label class="col-sm-3 control-label">订单条数：</label>
+                <div class="col-sm-8">
+                    <input name="orderCount" th:field="*{orderCount}" class="form-control" type="text">
+                </div>
+                <label class="col-sm-3 control-label">商品ID：</label>
+                <div class="col-sm-8">
+                    <input name="skuId" th:field="*{skuId}" class="form-control" type="text">
+                </div>
+                <label class="col-sm-3 control-label">状态：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('all_status')}">
+                        <input type="radio" th:id="${'status_' + dict.dictCode}" name="status" th:value="${dict.dictValue}" th:field="*{status}">
+                        <label th:for="${'status_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "job/count";
+        $("#form-count-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-count-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

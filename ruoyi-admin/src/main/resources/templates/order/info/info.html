@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<script th:src="@{/js/laydate/laydate.js}"></script>
+<head>
+    <th:block th:include="include :: header('充值通道订单列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul id="element">
+                        	<li>
+                                <label style="width: 80px">开始时间：</label>
+                                <input type="text" class="time-input  test-item" th:value="${startTime}" placeholder="请选择创建时间" name="createTime"/>
+                            </li>
+                            <li>
+                                <label style="width: 80px">结束时间：</label>
+                                <input type="text" class="time-input  test-item" th:value="${endTime}"  placeholder="请选择结果时间" name="resultTime"/>
+                            </li>
+                            <li>
+                                <label style="width: 80px">运营商：</label>
+                                <select name="serviceName" th:with="type=${@dict.getType('service_type')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label style="width: 80px">产品类型：</label>
+                                <select name="productType" th:with="type=${@dict.getType('product_type')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li th:if="${type} eq 3">
+                                <label>公司：</label>
+                              <select name="companyId">
+                                    <option value="">所有</option>
+                                    <option th:each="company : ${companyList}" th:text="${company.companyName}" th:value="${company.id}"></option>
+                            </select>
+                            </li>
+                            <li th:if="${type} eq 3">
+                                <label>通道：</label>
+                                <select name="channelId" class="form-control m-b">
+                                    <option value="">所有</option>
+                                    <option th:each="channel : ${channelList}" th:text="${channel.channelName}" th:value="${channel.id}"></option>
+                                </select>
+                            </li>
+                            <li th:if="${type} eq 3">
+                                <label>商户：</label>
+                                <select name="merId" class="form-control m-b">
+                                    <option value="">所有</option>
+                                    <option th:each="mer : ${merList}" th:text="${mer.merName}" th:value="${mer.id}"></option>
+                                </select>
+                            </li>
+                            <li th:if="${type} eq 4">
+                                <label>通道：</label>
+                                <select name="channelId" class="form-control m-b">
+                                    <option value="">所有</option>
+                                    <option th:each="channel : ${channelList}" th:text="${channel.channelName}" th:value="${channel.id}"></option>
+                                </select>
+                            </li>
+                            <li th:if="${type} eq 4">
+                                <label>商户：</label>
+                                <select name="merId" class="form-control m-b">
+                                    <option value="">所有</option>
+                                    <option th:each="mer : ${merList}" th:text="${mer.merName}" th:value="${mer.id}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label style="width: 80px">系统订单号：</label>
+                                <input type="text" name="sysOrderNo"/>
+                            </li>
+                            <li>
+                                <label style="width: 80px">商户订单号：</label>
+                                <input type="text" name="merOrderNo"/>
+                            </li>
+                            <li>
+                                <label style="width: 80px">充值手机号：</label>
+                                <input type="text" name="tel"/>
+                            </li>
+                            <li>
+                            	<input type="hidden" th:value="${areaDtoStr}" id="areaDtoStr">
+								<label style="width: 80px">省：</label>
+								<select class="type" name="areaId"></select>
+							</li>
+							<li>
+								<label style="width: 80px">市：</label>
+								<select class="router" name="cityId"></select>
+							</li>
+                            <li>
+                                <label style="width: 80px">状态：</label>
+                                <select name="status" th:with="type=${@dict.getType('order_status')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label style="width: 80px">通知结果：</label>
+                                <select name="noticeStatus" th:with="type=${@dict.getType('notify_status')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label style="width: 80px">面额：</label>
+                                <input type="text" name="amtS"/>
+                                <span>-</span>
+                                <input type="text" name="amtE"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-info" onclick="notifySelected()">
+                    <i class="fa fa-send"></i> 批量补发通知
+                </a>
+                <a class="btn btn-primary" onclick="statusSelected()">
+                    <i class="fa fa-refresh"></i> 批量同步状态
+                </a>
+            </div>
+<!--             <div class="btn-group-sm" id="toolbar" role="group"> -->
+<!--                 <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="order:info:add"> -->
+<!--                     <i class="fa fa-plus"></i> 添加 -->
+<!--                 </a> -->
+<!--                 <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="order:info:edit"> -->
+<!--                     <i class="fa fa-edit"></i> 修改 -->
+<!--                 </a> -->
+<!--                 <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="order:info:remove"> -->
+<!--                     <i class="fa fa-remove"></i> 删除 -->
+<!--                 </a> -->
+<!--                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="order:info:export"> -->
+<!--                     <i class="fa fa-download"></i> 导出 -->
+<!--                 </a> -->
+<!--             </div> -->
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: jquery-cxselect-js" />
+    <script th:inline="javascript">
+    	var areadata = JSON.parse($("#areaDtoStr").val());
+//     	var areadata = [{"v":"taobao","n":"淘宝","s":[{"v":"tm","n":"天猫"},{"v":"jhs","n":"聚划算"}]},{"v":"jd","n":"京东","s":[{"v":"jdcs","n":"京东超市"},{"v":"jdsx","n":"京东生鲜"}]}];
+    	$('#element').cxSelect({
+      	  selects: ['type', 'router'],
+      	  jsonValue: 'v',
+      	  data: areadata
+      	});
+        var editFlag = [[${@permission.hasPermi('order:info:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('order:info:remove')}]];
+        var statusDatas = [[${@dict.getType('order_status')}]];
+        var noticeStatusDatas = [[${@dict.getType('notify_status')}]];
+        var productTypeDatas = [[${@dict.getType('product_type')}]];
+        var serviceTypeShortDatas = [[${@dict.getType('service_type_short')}]];
+        var channelDatas = [[${@dict.getType('order_channel_name')}]];
+        var type = [[${type}]];
+        var prefix = ctx + "order/info";
+		var noticeUrl= prefix+"/noticeAgain";
+		var statusUrl= prefix+"/statusAgain";
+		function sreachLog(sysOrderNo) {
+            $.modal.open("查看历史记录", prefix+"/searchLog/"+sysOrderNo,1200,600);
+        }
+		function sreachChannelOrder(sysOrderNo) {
+            $.modal.open("查看通道子订单", prefix+"/searchChannelOrder/"+sysOrderNo,1200,600);
+        }
+		
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "充值通道订单",
+                showSearch: false,
+		        showRefresh: false,
+		        showToggle: false,
+		        showColumns: false,
+		        clickToSelect: true,
+		        rememberSelected: true,
+                columns: [{
+                	field: 'state',
+                    checkbox: true
+                },
+
+                {
+                    field: 'merOrderNo',
+                    title: '商户订单号'
+                },
+                {
+                    field: 'tel',
+                    title: '充值手机号'
+                },
+                {
+                    field: 'productType',
+                    title: '产品类型',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(productTypeDatas, value);
+                    }
+                },
+                {
+                   	field: 'serviceName',
+                    title: '运营商',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(serviceTypeShortDatas, value);
+                    }
+                   	
+                },
+                {
+                   	field: 'province',
+                    title: '省份',
+                   	
+                },
+                {
+                   	field: 'city',
+                    title: '城市',
+                   	
+                },
+                {
+                    field: 'companyName',
+                    title: '公司'
+                },
+                {
+                    field: 'channelName',
+                    title: '通道'
+                },
+                {
+                    field: 'merShortName',
+                    title: '商户'
+                },
+                {
+                    field: 'amt',
+                    title: '充值金额'
+                },
+                {
+                    field: 'sysActAmt',
+                    title: '成本'
+                },
+                    {
+                        field: 'merActAmt',
+                        title: '价格'
+                    },
+                {
+                    field: 'createTime',
+                    title: '创建时间'
+                },
+                {
+                    field: 'resultTime',
+                    title: '结果时间'
+                },
+                {
+                    field: 'timeConsuming',
+                    title: '耗时'
+                },
+                {
+                    field: 'status',
+                    title: '订单状态',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(statusDatas, value);
+                    }
+                },
+                {
+                    field: 'noticeStatus',
+                    title: '通知状态',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(noticeStatusDatas, value);
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-info btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="sreachLog(\''+ row.sysOrderNo +'\')"><i class="fa fa-search"></i>日志</a> ');
+                        actions.push('<a class="btn btn-primary btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="sreachChannelOrder(\''+ row.sysOrderNo +'\')"><i class="fa fa-search"></i>子订单</a> ');
+                        actions.push('<a class="btn btn-warning btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="asynStatus(\'' + row.id + '\')"><i class="fa fa-refresh"></i>同步</a> ');
+                        actions.push('<a class="btn btn-success btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="notice(\'' + row.id + '\')"><i class="fa fa-send"></i>通知</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            if(type==1){
+                options.columns.forEach(function(ele,index){
+                    if(options.columns[index]['field']=='sysActAmt'){
+                        options.columns[index]['visible']=false;
+                    }
+                    if(options.columns[index]['field']=='channelName'){
+                        options.columns[index]['visible']=false;
+                    }
+                })
+            }
+            $.table.init(options);
+        });
+        function notifySelected() {
+        	var userIds = $.table.selectColumns("id");
+        	var dataParam = $("#export-form").serializeArray();
+        	var tipMsg = "确定补发所有数据吗？";
+        	if($.common.isNotEmpty(userIds)){
+        		tipMsg = "确定补发勾选" + userIds.length + "条数据吗？";
+        		dataParam.push({ "name": "ids", "value": userIds });
+        	}
+        	$.modal.confirm(tipMsg, function() {
+        		$.post(noticeUrl,dataParam,function(result){
+    				if(result=='success'){
+    					alert("通知已补发");
+    				}else{
+    					alert("系统异常");
+    				}
+    			   
+    			  });
+        	});
+        }
+        function statusSelected() {
+        	var userIds = $.table.selectColumns("id");
+        	var dataParam = $("#export-form").serializeArray();
+        	var tipMsg = "确定同步所有数据吗？";
+        	if($.common.isNotEmpty(userIds)){
+        		tipMsg = "确定同步勾选" + userIds.length + "条数据吗？";
+        		dataParam.push({ "name": "ids", "value": userIds });
+        	}
+        	$.modal.confirm(tipMsg, function() {
+        		$.post(statusUrl,dataParam,function(result){
+    				if(result=='success'){
+    					alert("状态以同步");
+    				}else{
+    					alert("系统异常");
+    				}
+    			   
+    			  });
+        	});
+        }
+        function notice(id){
+			$.post(noticeUrl,{ids:id},function(result){
+				if(result=='success'){
+					alert("通知已补发");
+				}else{
+					alert("系统异常");
+				}
+			   
+			  });	  
+		}
+        function asynStatus(id){
+			$.post(statusUrl,{ids:id},function(result){
+				if(result=='success'){
+					alert("状态已同步，请稍后查询订单");
+				}else{
+					alert("系统异常");
+				}
+			  });	  
+		}
+    </script>
+    <script>
+		//执行一个laydate实例
+		lay('.test-item').each(function(){
+			  laydate.render({
+			    elem: this
+			    ,trigger: 'click'
+			    	,type: 'datetime'
+			  });
+			});
+	</script>
+</body>
+</html>

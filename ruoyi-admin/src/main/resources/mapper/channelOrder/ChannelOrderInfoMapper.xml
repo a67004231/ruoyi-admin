@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.order.mapper.ChannelOrderInfoMapper">
+    
+    <resultMap type="ChannelOrderInfo" id="ChannelOrderInfoResult">
+        <result property="id"    column="id"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="channelCode"    column="channel_code"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="resultDate"    column="result_date"    />
+        <result property="status"    column="status"    />
+        <result property="isNotify"    column="is_notify"    />
+        <result property="isSearch"    column="is_search"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="sysOrderNo"    column="sys_order_no"    />
+        <result property="channelOrderNo"    column="channel_order_no"    />
+        <result property="amt"    column="amt"    />
+        <result property="sysActAmt"    column="sys_act_amt"    />
+        <result property="tel"    column="tel"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="version"    column="version"    />
+    </resultMap>
+
+    <sql id="selectChannelOrderInfoVo">
+        select id,(select channel_short_name from channel_info c where c.id=channel_id) channel_name, channel_id, channel_code, create_time, result_date, status, is_notify, is_search, order_id, sys_order_no, channel_order_no, amt, sys_act_amt, tel, serial_number, version from channel_order_info
+    </sql>
+
+    <select id="selectChannelOrderInfoList" parameterType="ChannelOrderInfo" resultMap="ChannelOrderInfoResult">
+        <include refid="selectChannelOrderInfoVo"/>
+        <where>  
+            <if test="channelId != null "> and channel_id = #{channelId}</if>
+            <if test="channelCode != null  and channelCode != ''"> and channel_code = #{channelCode}</if>
+            <if test="resultDate != null "> and result_date = #{resultDate}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="isNotify != null "> and is_notify = #{isNotify}</if>
+            <if test="isSearch != null "> and is_search = #{isSearch}</if>
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="sysOrderNo != null  and sysOrderNo != ''"> and sys_order_no = #{sysOrderNo}</if>
+            <if test="channelOrderNo != null  and channelOrderNo != ''"> and channel_order_no = #{channelOrderNo}</if>
+            <if test="amt != null "> and amt = #{amt}</if>
+            <if test="sysActAmt != null "> and sys_act_amt = #{sysActAmt}</if>
+            <if test="tel != null  and tel != ''"> and tel = #{tel}</if>
+            <if test="serialNumber != null  and serialNumber != ''"> and serial_number = #{serialNumber}</if>
+            <if test="version != null "> and version = #{version}</if>
+        </where>
+    </select>
+    
+    <select id="selectChannelOrderInfoById" parameterType="Long" resultMap="ChannelOrderInfoResult">
+        <include refid="selectChannelOrderInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertChannelOrderInfo" parameterType="ChannelOrderInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into channel_order_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="channelId != null">channel_id,</if>
+            <if test="channelCode != null">channel_code,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="resultDate != null">result_date,</if>
+            <if test="status != null">status,</if>
+            <if test="isNotify != null">is_notify,</if>
+            <if test="isSearch != null">is_search,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="sysOrderNo != null">sys_order_no,</if>
+            <if test="channelOrderNo != null">channel_order_no,</if>
+            <if test="amt != null">amt,</if>
+            <if test="sysActAmt != null">sys_act_amt,</if>
+            <if test="tel != null">tel,</if>
+            <if test="serialNumber != null">serial_number,</if>
+            <if test="version != null">version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="channelId != null">#{channelId},</if>
+            <if test="channelCode != null">#{channelCode},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="resultDate != null">#{resultDate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="isNotify != null">#{isNotify},</if>
+            <if test="isSearch != null">#{isSearch},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="sysOrderNo != null">#{sysOrderNo},</if>
+            <if test="channelOrderNo != null">#{channelOrderNo},</if>
+            <if test="amt != null">#{amt},</if>
+            <if test="sysActAmt != null">#{sysActAmt},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="serialNumber != null">#{serialNumber},</if>
+            <if test="version != null">#{version},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChannelOrderInfo" parameterType="ChannelOrderInfo">
+        update channel_order_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="channelCode != null">channel_code = #{channelCode},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="resultDate != null">result_date = #{resultDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="isNotify != null">is_notify = #{isNotify},</if>
+            <if test="isSearch != null">is_search = #{isSearch},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="sysOrderNo != null">sys_order_no = #{sysOrderNo},</if>
+            <if test="channelOrderNo != null">channel_order_no = #{channelOrderNo},</if>
+            <if test="amt != null">amt = #{amt},</if>
+            <if test="sysActAmt != null">sys_act_amt = #{sysActAmt},</if>
+            <if test="tel != null">tel = #{tel},</if>
+            <if test="serialNumber != null">serial_number = #{serialNumber},</if>
+            <if test="version != null">version = #{version},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChannelOrderInfoById" parameterType="Long">
+        delete from channel_order_info where id = #{id}
+    </delete>
+
+    <delete id="deleteChannelOrderInfoByIds" parameterType="String">
+        delete from channel_order_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

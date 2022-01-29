@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.merchant.mapper.MerProductAuthMapper">
+    
+    <resultMap type="MerProductAuth" id="MerProductAuthResult">
+        <result property="id"    column="id"    />
+        <result property="merId"    column="mer_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="productCode"    column="product_code"    />
+        <result property="rateType"    column="rate_type"    />
+        <result property="rate"    column="rate"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="channelCode"    column="channel_code"    />
+    </resultMap>
+
+    <sql id="selectMerProductAuthVo">
+        select id, mer_id, product_id, product_code, rate_type, rate, create_time, update_time, channel_id, channel_code from mer_product_auth
+    </sql>
+
+    <select id="selectMerProductAuthList" parameterType="MerProductAuth" resultMap="MerProductAuthResult">
+        <include refid="selectMerProductAuthVo"/>
+        <where>  
+            <if test="merId != null "> and mer_id = #{merId}</if>
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="productCode != null  and productCode != ''"> and product_code = #{productCode}</if>
+            <if test="rateType != null "> and rate_type = #{rateType}</if>
+            <if test="rate != null  and rate != ''"> and rate = #{rate}</if>
+            <if test="channelId != null "> and channel_id = #{channelId}</if>
+            <if test="channelCode != null  and channelCode != ''"> and channel_code = #{channelCode}</if>
+        </where>
+    </select>
+    
+    <select id="selectMerProductAuthById" parameterType="Long" resultMap="MerProductAuthResult">
+        <include refid="selectMerProductAuthVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMerProductAuth" parameterType="MerProductAuth" useGeneratedKeys="true" keyProperty="id">
+        insert into mer_product_auth
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="merId != null">mer_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="productCode != null">product_code,</if>
+            <if test="rateType != null">rate_type,</if>
+            <if test="rate != null and rate != ''">rate,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="channelId != null">channel_id,</if>
+            <if test="channelCode != null and channelCode != ''">channel_code,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="merId != null">#{merId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="productCode != null">#{productCode},</if>
+            <if test="rateType != null">#{rateType},</if>
+            <if test="rate != null and rate != ''">#{rate},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="channelId != null">#{channelId},</if>
+            <if test="channelCode != null and channelCode != ''">#{channelCode},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMerProductAuth" parameterType="MerProductAuth">
+        update mer_product_auth
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="merId != null">mer_id = #{merId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="productCode != null">product_code = #{productCode},</if>
+            <if test="rateType != null">rate_type = #{rateType},</if>
+            <if test="rate != null and rate != ''">rate = #{rate},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="channelCode != null and channelCode != ''">channel_code = #{channelCode},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMerProductAuthById" parameterType="Long">
+        delete from mer_product_auth where id = #{id}
+    </delete>
+
+    <delete id="deleteMerProductAuthByIds" parameterType="String">
+        delete from mer_product_auth where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

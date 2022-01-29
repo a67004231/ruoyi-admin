@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.factor.mapper.FactorTypeMapper">
+    
+    <resultMap type="FactorType" id="FactorTypeResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="factorName"    column="factor_name"    />
+        <result property="isStatic"    column="is_static"    />
+        <result property="isChannel"    column="is_channel"    />
+        <result property="isPass"    column="is_pass"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="status"    column="status"    />
+        <result property="dataKey"    column="data_key"    />
+    </resultMap>
+
+    <sql id="selectFactorTypeVo">
+        select id, type, factor_name, is_static, is_channel, is_pass, create_time, update_time, status, data_key from factor_type
+    </sql>
+
+    <select id="selectFactorTypeList" parameterType="FactorType" resultMap="FactorTypeResult">
+        <include refid="selectFactorTypeVo"/>
+        <where>  
+            <if test="type != null "> and type = #{type}</if>
+            <if test="factorName != null  and factorName != ''"> and factor_name like concat('%', #{factorName}, '%')</if>
+            <if test="isStatic != null "> and is_static = #{isStatic}</if>
+            <if test="isChannel != null "> and is_channel = #{isChannel}</if>
+            <if test="isPass != null "> and is_pass = #{isPass}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="dataKey != null  and dataKey != ''"> and data_key = #{dataKey}</if>
+        </where>
+    </select>
+    
+    <select id="selectFactorTypeById" parameterType="Long" resultMap="FactorTypeResult">
+        <include refid="selectFactorTypeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertFactorType" parameterType="FactorType">
+        insert into factor_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="factorName != null">factor_name,</if>
+            <if test="isStatic != null">is_static,</if>
+            <if test="isChannel != null">is_channel,</if>
+            <if test="isPass != null">is_pass,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="status != null">status,</if>
+            <if test="dataKey != null">data_key,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="factorName != null">#{factorName},</if>
+            <if test="isStatic != null">#{isStatic},</if>
+            <if test="isChannel != null">#{isChannel},</if>
+            <if test="isPass != null">#{isPass},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="dataKey != null">#{dataKey},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFactorType" parameterType="FactorType">
+        update factor_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="factorName != null">factor_name = #{factorName},</if>
+            <if test="isStatic != null">is_static = #{isStatic},</if>
+            <if test="isChannel != null">is_channel = #{isChannel},</if>
+            <if test="isPass != null">is_pass = #{isPass},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="dataKey != null">data_key = #{dataKey},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFactorTypeById" parameterType="Long">
+        delete from factor_type where id = #{id}
+    </delete>
+
+    <delete id="deleteFactorTypeByIds" parameterType="String">
+        delete from factor_type where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

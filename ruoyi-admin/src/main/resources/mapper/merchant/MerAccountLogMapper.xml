@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.merchant.mapper.MerAccountLogMapper">
+    
+    <resultMap type="MerAccountLog" id="MerAccountLogResult">
+        <result property="id"    column="id"    />
+        <result property="merId"    column="mer_id"    />
+        <result property="type"    column="type"    />
+        <result property="accountId"    column="account_id"    />
+        <result property="cxOrderNo"    column="cx_order_no"    />
+        <result property="changeAmt"    column="change_amt"    />
+        <result property="changeBef"    column="change_bef"    />
+        <result property="changeAft"    column="change_aft"    />
+        <result property="changeText"    column="change_text"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="sysOrderNo"    column="sys_order_no"    />
+    </resultMap>
+
+    <sql id="selectMerAccountLogVo">
+        select id, mer_id, type, account_id, cx_order_no, change_amt/100 change_amt, change_bef, change_aft, change_text, create_time,sys_order_no from mer_account_log
+    </sql>
+
+    <select id="selectMerAccountLogList" parameterType="MerAccountLog" resultMap="MerAccountLogResult">
+        <include refid="selectMerAccountLogVo"/>
+        <where>  
+            <if test="merId != null "> and mer_id = #{merId}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="accountId != null "> and account_id = #{accountId}</if>
+            <if test="sysOrderNo != null  and sysOrderNo != ''"> and sys_order_no = #{sysOrderNo}</if>
+            <if test="changeAmt != null "> and change_amt = #{changeAmt}</if>
+            <if test="changeBef != null  and changeBef != ''"> and change_bef = #{changeBef}</if>
+            <if test="changeAft != null  and changeAft != ''"> and change_aft = #{changeAft}</if>
+            <if test="changeText != null  and changeText != ''"> and change_text = #{changeText}</if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectMerAccountLogById" parameterType="Long" resultMap="MerAccountLogResult">
+        <include refid="selectMerAccountLogVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMerAccountLog" parameterType="MerAccountLog" useGeneratedKeys="true" keyProperty="id">
+        insert into mer_account_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="merId != null">mer_id,</if>
+            <if test="type != null">type,</if>
+            <if test="accountId != null">account_id,</if>
+            <if test="cxOrderNo != null and cxOrderNo != ''">cx_order_no,</if>
+            <if test="changeAmt != null">change_amt,</if>
+            <if test="changeBef != null and changeBef != ''">change_bef,</if>
+            <if test="changeAft != null and changeAft != ''">change_aft,</if>
+            <if test="changeText != null and changeText != ''">change_text,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="merId != null">#{merId},</if>
+            <if test="type != null">#{type},</if>
+            <if test="accountId != null">#{accountId},</if>
+            <if test="cxOrderNo != null and cxOrderNo != ''">#{cxOrderNo},</if>
+            <if test="changeAmt != null">#{changeAmt},</if>
+            <if test="changeBef != null and changeBef != ''">#{changeBef},</if>
+            <if test="changeAft != null and changeAft != ''">#{changeAft},</if>
+            <if test="changeText != null and changeText != ''">#{changeText},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMerAccountLog" parameterType="MerAccountLog">
+        update mer_account_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="merId != null">mer_id = #{merId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="accountId != null">account_id = #{accountId},</if>
+            <if test="cxOrderNo != null and cxOrderNo != ''">cx_order_no = #{cxOrderNo},</if>
+            <if test="changeAmt != null">change_amt = #{changeAmt},</if>
+            <if test="changeBef != null and changeBef != ''">change_bef = #{changeBef},</if>
+            <if test="changeAft != null and changeAft != ''">change_aft = #{changeAft},</if>
+            <if test="changeText != null and changeText != ''">change_text = #{changeText},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMerAccountLogById" parameterType="Long">
+        delete from mer_account_log where id = #{id}
+    </delete>
+
+    <delete id="deleteMerAccountLogByIds" parameterType="String">
+        delete from mer_account_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

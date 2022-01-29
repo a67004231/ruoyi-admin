@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('通道订单列表')" />
+</head>
+<body class="gray-bg">
+    <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+	            <form id="formId"  th:object="${orderInfo}">
+	                <div class="select-list">
+	                    <ul>
+	                        <li>
+	                            <input type="text" name="sysOrderNo" th:field="*{sysOrderNo}" style="display:none"/>
+	                        </li>
+	                    </ul>
+	                </div>
+	            </form>
+        	</div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('channelOrder:info:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('channelOrder:info:remove')}]];
+        var prefix = ctx + "channelOrder/info";
+        var statusDatas = [[${@dict.getType('order_status')}]];
+        var productTypeDatas = [[${@dict.getType('product_type')}]];
+        var channelDatas = [[${@dict.getType('order_channel_name')}]];
+        var notifyDatas = [[${@dict.getType('is_notify')}]];
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "通道订单",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'channelName',
+                    title: '通道名称',
+                },
+                {
+                    field: 'createTime',
+                    title: '下单时间'
+                },
+                {
+                    field: 'resultDate',
+                    title: '结果时间'
+                },
+                {
+                    field: 'status',
+                    title: '状态',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(statusDatas, value);
+                     }
+                },
+                {
+                    field: 'isNotify',
+                    title: '是否收到通知',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(notifyDatas, value);
+                     }
+                },
+                {
+                    field: 'sysOrderNo',
+                    title: '系统订单号'
+                },
+                {
+                    field: 'channelOrderNo',
+                    title: '通道订单号'
+                },
+                {
+                    field: 'amt',
+                    title: '充值金额',
+                    formatter: function(value, row, index) {
+                        return row.amt/100;
+                 }
+                },
+                {
+                    field: 'sysActAmt',
+                    title: '成本金额',
+                    formatter: function(value, row, index) {
+                        return row.sysActAmt/100;
+                 	}
+                },
+                {
+                    field: 'tel',
+                    title: '充值手机号'
+                },
+                {
+                    field: 'serialNumber',
+                    title: '官方流水号'
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

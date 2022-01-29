@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('资金日志列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>日志日期：</label>
+                                <input type="text" class="time-input" placeholder="请选择日志日期" name="logDate"/>
+                            </li>
+                            <!--<li>-->
+                                <!--<label>今日成功金额：</label>-->
+                                <!--<input type="text" name="successAmt"/>-->
+                            <!--</li>-->
+                            <!--<li>-->
+                                <!--<label>今日未支付金额：</label>-->
+                                <!--<input type="text" name="unpaidAmt"/>-->
+                            <!--</li>-->
+                            <!--<li>-->
+                                <!--<label>今日已支付金额：</label>-->
+                                <!--<input type="text" name="paidAmt"/>-->
+                            <!--</li>-->
+                            <li>
+                                <label>状态：</label>
+                                <select name="status">
+                                    <option value="">所有</option>
+                                    <option value="1">成功</option>
+                                    <option value="1">失败</option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>商户名称：</label>
+                                <input type="text" name="merName"/>
+                            </li>
+                            <li>
+                                <label>通道名称：</label>
+                                <input type="text" name="channelName"/>
+                            </li>
+
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <!--<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="capital:capitalLog:add">-->
+                    <!--<i class="fa fa-plus"></i> 添加-->
+                <!--</a>-->
+                <!--<a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="capital:capitalLog:edit">-->
+                    <!--<i class="fa fa-edit"></i> 修改-->
+                <!--</a>-->
+                <!--<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="capital:capitalLog:remove">-->
+                    <!--<i class="fa fa-remove"></i> 删除-->
+                <!--</a>-->
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="capital:capitalLog:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('capital:capitalLog:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('capital:capitalLog:remove')}]];
+        var prefix = ctx + "capital/capitalLog";
+
+        $(function() {
+            var options = {
+                url: prefix + "/listLog",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "资金日志",
+                showFooter: true,
+                columns: [{
+                    checkbox: true
+                },
+                    {
+                        field: 'logDate',
+                        title: '日志日期'
+                    },
+                    {
+                        field: 'merId',
+                        title: '商户id',
+                        visible: false
+                    },
+                    {
+                        field: 'merName',
+                        title: '商户名称'
+                    },
+                    {
+                        field: 'channelId',
+                        title: '通道id',
+                        visible: false
+                    },
+                    {
+                        field: 'channelName',
+                        title: '通道名称'
+                    },
+                    {
+                        field: 'id',
+                        title: '',
+                        visible: false
+                    },
+                    {
+                        field: 'successAmt',
+                        title: '成功总金额',
+                        formatter: function(value, row, index) {
+                            return row.successAmt.toFixed(2);
+                        },
+                        footerFormatter:function (value) {
+                            var sumAmt = 0;
+                            for (var i in value) {
+                                sumAmt += parseFloat(value[i].successAmt);
+                            }
+                            return "总金额：" + sumAmt.toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'unpaidAmt',
+                        title: '应付总金额',
+                        formatter: function(value, row, index) {
+                            return row.unpaidAmt.toFixed(2);
+                        },
+                        footerFormatter:function (value) {
+                            var sumAmt = 0;
+                            for (var i in value) {
+                                sumAmt += parseFloat(value[i].unpaidAmt);
+                            }
+                            return "总金额：" + sumAmt.toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'unpaidAmt',
+                        title: '未支付总金额',
+                        formatter: function(value, row, index) {
+                            return (row.unpaidAmt-row.paidAmt).toFixed(2);
+                        },
+                        footerFormatter:function (value) {
+                            var sumAmt = 0;
+                            for (var i in value) {
+                                sumAmt += parseFloat(value[i].unpaidAmt);
+                                sumAmt -= parseFloat(value[i].paidAmt);
+                            }
+                            return "总金额：" + sumAmt.toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'paidAmt',
+                        title: '已支付总金额',
+                        formatter: function(value, row, index) {
+                            return row.paidAmt.toFixed(2);
+                        },
+                        footerFormatter:function (value) {
+                            var sumAmt = 0;
+                            for (var i in value) {
+                                sumAmt += parseFloat(value[i].paidAmt);
+                            }
+                            return "总金额：" + sumAmt.toFixed(2);
+                        }
+                    },
+                    {
+                        field: 'status',
+                        title: '状态',
+                        visible: false
+                    },
+
+
+                ]
+            };
+            $.table.init(options);
+        });
+        function footerStyle(column) {
+            return {
+                successAmt: {
+                    css: { color: 'red', 'font-weight': 'normal' }
+                },
+                unpaidAmt: {
+                    css: { color: 'red', 'font-weight': 'normal' }
+                },
+                paidAmt: {
+                    css: { color: 'red', 'font-weight': 'normal' }
+                }
+            }[column.field]
+        }
+    </script>
+</body>
+</html>

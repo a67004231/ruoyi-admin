@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('谷歌验证码')" />
+</head>
+<body>
+    <div class="main-content">
+        <form id="form-user-add" class="form-horizontal">
+            <div class="row" >
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label is-required">谷歌验证码：</label>
+                        <div class="col-sm-8">
+                            <input name="id" id="id" type="hidden" th:value="${sysUser.userId}">
+                            <input name="googleCode" id="googleCode" placeholder="请输入谷歌验证码" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+	<th:block th:include="include :: footer" />
+	<script th:inline="javascript">
+        $("#form-user-add").validate({
+            focusCleanup: true
+        });
+
+        function formData() {
+            var data=$('#form-user-add').serialize();
+            return data;
+            
+        }
+    </script>
+</body>
+</html>

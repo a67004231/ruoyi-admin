@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.merchant.mapper.ChannelMerAuthMapper">
+    
+    <resultMap type="ChannelMerAuth" id="ChannelMerAuthResult">
+        <result property="id"    column="id"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="merId"    column="mer_id"    />
+        <result property="channelCode"    column="channel_code"    />
+        <result property="merName"    column="mer_name"    />
+        <result property="status"    column="status"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="creditAmt"    column="credit_amt"    />
+        <result property="creditUseAmt"    column="credit_use_amt"    />
+        <result property="creditBalanceAmt"    column="credit_balance_amt"    />
+        <result property="creditFixAmt"    column="credit_fix_amt"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectChannelMerAuthVo">
+        select c.id, c.channel_id, c.mer_id, c.channel_code, c.channel_name, c.mer_name, c.status,c.create_time,
+        a.credit_amt credit_amt,a.credit_use_amt credit_use_amt,a.credit_balance_amt credit_balance_amt,a.credit_fix_amt credit_fix_amt
+        from channel_mer_auth c,channel_account a
+    </sql>
+
+    <select id="selectChannelMerAuthList" parameterType="ChannelMerAuth" resultMap="ChannelMerAuthResult">
+        <include refid="selectChannelMerAuthVo"/>
+        <where>
+            c.channel_id=a.channel_id
+            <if test="channelId != null "> and c.channel_id = #{channelId}</if>
+            <if test="merId != null "> and c.mer_id = #{merId}</if>
+            <if test="channelCode != null  and channelCode != ''"> and c.channel_code = #{channelCode}</if>
+            <if test="merName != null  and merName != ''"> and c.mer_name like concat('%', #{merName}, '%')</if>
+            <if test="status != null  and status != ''"> and c.status = #{status}</if>
+            <if test="channelName != null  and channelName != ''"> and c.channel_name like concat('%', #{channelName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectChannelMerAuthById" parameterType="Long" resultMap="ChannelMerAuthResult">
+        <include refid="selectChannelMerAuthVo"/>
+        where c.id = #{id} and c.channel_id=a.channel_id
+    </select>
+        
+    <insert id="insertChannelMerAuth" parameterType="ChannelMerAuth" useGeneratedKeys="true" keyProperty="id">
+        insert into channel_mer_auth
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="channelId != null">channel_id,</if>
+            <if test="merId != null">mer_id,</if>
+            <if test="channelCode != null">channel_code,</if>
+            <if test="merName != null">mer_name,</if>
+            <if test="status != null">status,</if>
+            <if test="channelName != null">channel_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="channelId != null">#{channelId},</if>
+            <if test="merId != null">#{merId},</if>
+            <if test="channelCode != null">#{channelCode},</if>
+            <if test="merName != null">#{merName},</if>
+            <if test="status != null">#{status},</if>
+            <if test="channelName != null">#{channelName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChannelMerAuth" parameterType="ChannelMerAuth">
+        update channel_mer_auth
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="merId != null">mer_id = #{merId},</if>
+            <if test="channelCode != null">channel_code = #{channelCode},</if>
+            <if test="merName != null">mer_name = #{merName},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="channelName != null">channel_name = #{channelName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChannelMerAuthById" parameterType="Long">
+        delete from channel_mer_auth where c.id = #{id}
+    </delete>
+
+    <delete id="deleteChannelMerAuthByIds" parameterType="String">
+        delete from channel_mer_auth where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('资金汇总列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('capital:capitalInfo:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('capital:capitalInfo:remove')}]];
+        var prefix = ctx + "capital/capitalInfo";
+        function sreachLog(capitalId) {
+            $.modal.open("查看历史记录", prefix+"/searchLog/"+capitalId,1200,600);
+        }
+        function sreachPayLog(capitalId) {
+            $.modal.open("查看转账记录", prefix+"/searchPayLog/"+capitalId,1200,600);
+        }
+        $(function() {
+            var options = {
+                url: prefix + "/totalList",
+                searchLogUrl: prefix + "/searchLog",
+                payLogUrl: prefix + "/payLog",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "资金信息",
+                showFooter: true,
+                footerStyle: footerStyle,
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'id',
+                    title: '',
+                    visible: false
+                },
+                {
+                    field: 'merName',
+                    title: '商户名称'
+                },
+                {
+                    field: 'companyName',
+                    title: '公司名称'
+                },
+                {
+                    field: 'successAmt',
+                    title: '成功总金额',
+                    formatter: function(value, row, index) {
+                        return row.successAmt.toFixed(2);
+                    },
+                    footerFormatter:function (value) {
+                        var sumAmt = 0;
+                        for (var i in value) {
+                            sumAmt += parseFloat(value[i].successAmt);
+                        }
+                        return "总金额：" + sumAmt.toFixed(2);
+                    }
+                },
+                {
+                        field: 'unpaidAmt',
+                        title: '应付总金额',
+                        formatter: function(value, row, index) {
+                            return row.unpaidAmt.toFixed(2);
+                        },
+                        footerFormatter:function (value) {
+                            var sumAmt = 0;
+                            for (var i in value) {
+                                sumAmt += parseFloat(value[i].unpaidAmt);
+                            }
+                            return "总金额：" + sumAmt.toFixed(2);
+                        }
+                    },
+                {
+                    field: 'unpaidAmt',
+                    title: '未支付总金额',
+                    formatter: function(value, row, index) {
+                        return (row.unpaidAmt-row.paidAmt).toFixed(2);
+                    },
+                    footerFormatter:function (value) {
+                        var sumAmt = 0;
+                        for (var i in value) {
+                            sumAmt += parseFloat(value[i].unpaidAmt);
+                            sumAmt -= parseFloat(value[i].paidAmt);
+                        }
+                        return "总金额：" + sumAmt.toFixed(2);
+                    }
+                },
+                {
+                    field: 'paidAmt',
+                    title: '已支付总金额',
+                    formatter: function(value, row, index) {
+                        return row.paidAmt.toFixed(2);
+                    },
+                    footerFormatter:function (value) {
+                        var sumAmt = 0;
+                        for (var i in value) {
+                            sumAmt += parseFloat(value[i].paidAmt);
+                        }
+                        return "总金额：" + sumAmt.toFixed(2);
+                    }
+                },
+                {
+                    field: 'updateTime',
+                    title: '更新时间'
+                },
+
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="sreachLog(\''+ row.merId +'-'+row.companyId+'\')"><i class="fa fa-search"></i>查看历史合计</a> ');
+                        actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="sreachPayLog(\''+ row.merId +'-'+row.companyId+'\')"><i class="fa fa-search"></i>查看转账记录</a> ');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+
+        });
+        function footerStyle(column) {
+            return {
+                successAmt: {
+                    css: { color: 'red', 'font-weight': 'normal' }
+                },
+                unpaidAmt: {
+                    css: { color: 'red', 'font-weight': 'normal' }
+                },
+                paidAmt: {
+                    css: { color: 'red', 'font-weight': 'normal' }
+                }
+            }[column.field]
+        }
+    </script>
+</body>
+</html>

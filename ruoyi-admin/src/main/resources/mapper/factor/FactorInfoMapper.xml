@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.factor.mapper.FactorInfoMapper">
+    
+    <resultMap type="FactorInfo" id="FactorInfoResult">
+        <result property="id"    column="id"    />
+        <result property="factorTypeId"    column="factor_type_id"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="channelCode"    column="channel_code"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="value"    column="value"    />
+        <result property="minData"    column="min_data"    />
+        <result property="maxData"    column="max_data"    />
+        <result property="weight"    column="weight"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="redisKey"    column="redis_key"    />
+        <result property="rate"    column="rate"    />
+        <result property="factorName"    column="factor_name"    />
+    </resultMap>
+
+    <sql id="selectFactorInfoVo">
+        select id, factor_type_id,(SELECT factor_name from factor_type where id=f.factor_type_id) factor_name,
+         channel_id, channel_code,(SELECT channel_name from channel_info where id=f.channel_id) channel_name,
+         value, min_data, max_data, weight, create_time, update_time, redis_key, rate from factor_info f
+    </sql>
+
+    <select id="selectFactorInfoList" parameterType="FactorInfo" resultMap="FactorInfoResult">
+        <include refid="selectFactorInfoVo"/>
+        <where>  
+            <if test="factorTypeId != null "> and factor_type_id = #{factorTypeId}</if>
+            <if test="channelId != null "> and channel_id = #{channelId}</if>
+            <if test="channelCode != null  and channelCode != ''"> and channel_code = #{channelCode}</if>
+            <if test="value != null "> and value = #{value}</if>
+            <if test="minData != null "> and min_data = #{minData}</if>
+            <if test="maxData != null "> and max_data = #{maxData}</if>
+            <if test="weight != null "> and weight = #{weight}</if>
+            <if test="redisKey != null  and redisKey != ''"> and redis_key = #{redisKey}</if>
+            <if test="rate != null "> and rate = #{rate}</if>
+        </where>
+    </select>
+    
+    <select id="selectFactorInfoById" parameterType="Long" resultMap="FactorInfoResult">
+        <include refid="selectFactorInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertFactorInfo" parameterType="FactorInfo">
+        insert into factor_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="factorTypeId != null">factor_type_id,</if>
+            <if test="channelId != null">channel_id,</if>
+            <if test="channelCode != null">channel_code,</if>
+            <if test="value != null">value,</if>
+            <if test="minData != null">min_data,</if>
+            <if test="maxData != null">max_data,</if>
+            <if test="weight != null">weight,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="redisKey != null">redis_key,</if>
+            <if test="rate != null">rate,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="factorTypeId != null">#{factorTypeId},</if>
+            <if test="channelId != null">#{channelId},</if>
+            <if test="channelCode != null">#{channelCode},</if>
+            <if test="value != null">#{value},</if>
+            <if test="minData != null">#{minData},</if>
+            <if test="maxData != null">#{maxData},</if>
+            <if test="weight != null">#{weight},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="redisKey != null">#{redisKey},</if>
+            <if test="rate != null">#{rate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFactorInfo" parameterType="FactorInfo">
+        update factor_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="factorTypeId != null">factor_type_id = #{factorTypeId},</if>
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="channelCode != null">channel_code = #{channelCode},</if>
+            <if test="value != null">value = #{value},</if>
+            <if test="minData != null">min_data = #{minData},</if>
+            <if test="maxData != null">max_data = #{maxData},</if>
+            <if test="weight != null">weight = #{weight},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="redisKey != null">redis_key = #{redisKey},</if>
+            <if test="rate != null">rate = #{rate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFactorInfoById" parameterType="Long">
+        delete from factor_info where id = #{id}
+    </delete>
+
+    <delete id="deleteFactorInfoByIds" parameterType="String">
+        delete from factor_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.order.mapper.OrderInfoMapper">
+    
+    <resultMap type="OrderInfoReport" id="OrderInfoReportResult">
+    	<result property="date"    column="date"    />
+    	<result property="count"    column="count"    />
+    	<result property="amt"    column="amt"    />
+    	<result property="sumAmt"    column="sum_amt"    />
+    	<result property="serviceName"    column="service_name"    />
+    	<result property="merName"    column="mer_name"    />
+    	<result property="channelName"    column="channel_name"    />
+        <result property="merId"    column="mer_id"    />
+        <result property="channelId"    column="channel_id"    />
+    	<result property="sucAmt"    column="suc_amt"    />
+    	<result property="sucCount"    column="suc_count"    />
+    	<result property="rate"    column="rate"    />
+    	<result property="sucFee"    column="suc_fee"    />
+        <result property="sysAmt"    column="sys_amt"    />
+        <result property="timeConsuming"    column="time_consuming"    />
+    </resultMap>
+    <resultMap type="OrderInfo" id="OrderInfoResult">
+        <result property="id"    column="id"    />
+        <result property="sysOrderNo"    column="sys_order_no"    />
+        <result property="merOrderNo"    column="mer_order_no"    />
+        <result property="merOrderNoShow"    column="mer_order_no_show"    />
+        <result property="thirdOrderNo"    column="third_order_no"    />
+        <result property="merNo"    column="mer_no"    />
+        <result property="merShortName"    column="mer_short_name"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="thirdMerchantCode"    column="third_merchant_code"    />
+        <result property="thirdCode"    column="third_code"    />
+        <result property="tel"    column="tel"    />
+        <result property="productId"    column="product_id"    />
+        <result property="province"    column="province"    />
+        <result property="amt"    column="amt"    />
+        <result property="sysActAmt"    column="sys_act_amt"    />
+        <result property="merActAmt"    column="mer_act_amt"    />
+        <result property="channelAmtAdd"    column="channel_amt_add"    />
+        <result property="channelAmtRs"    column="channel_amt_rs"    />
+        <result property="merAmtAdd"    column="mer_amt_add"    />
+        <result property="merAmtRs"    column="mer_amt_rs"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="resultTime"    column="result_time"    />
+        <result property="postMsg"    column="post_msg"    />
+        <result property="asynMsg"    column="asyn_msg"    />
+        <result property="channelDealCode"    column="channel_deal_code"    />
+        <result property="channelDealMsg"    column="channel_deal_msg"    />
+        <result property="status"    column="status"    />
+        <result property="merId"    column="mer_id"    />
+        <result property="rate"    column="rate"    />
+        <result property="channelCode"    column="channel_code"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="rateType"    column="rate_type"    />
+        <result property="fee"    column="fee"    />
+        <result property="searchCount"    column="search_count"    />
+        <result property="noticeCount"    column="notice_count"    />
+        <result property="noticeStatus"    column="notice_status"    />
+        <result property="noticeUrl"    column="notice_url"    />
+        <result property="maxTime"    column="max_time"    />
+        <result property="useTime"    column="use_time"    />
+        <result property="serviceName"    column="service_name"    />
+        <result property="productType"    column="product_type"    />
+        <result property="pronvince"    column="pronvince"    />
+        <result property="city"    column="city"    />
+        <result property="cityId"    column="city_id"    />
+        <result property="timeConsuming"    column="time_consuming"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="companyName"    column="company_name"    />
+    </resultMap>
+
+    <sql id="selectOrderInfoVo">
+        select
+        (select mer_short_name from mer_info m where m.id=mer_id) mer_short_name,
+        (select channel_short_name from channel_info c where c.id=channel_id) channel_name,
+        (select company_name from company_info com where com.id=company_id) company_name,
+        id, sys_order_no, mer_order_no,CONCAT(mer_order_no,'[',mer_id,']') mer_order_no_show, third_order_no, mer_no,
+        third_merchant_code, third_code, tel, product_id, province, amt/100 amt, sys_act_amt/100 sys_act_amt,mer_act_amt/100 mer_act_amt, channel_amt_add,
+        channel_amt_rs, mer_amt_add, mer_amt_rs, create_time, update_time, result_time, post_msg, asyn_msg, channel_deal_code, 
+        channel_deal_msg, status, mer_id, rate, channel_code, channel_id, rate_type, fee, search_count, notice_count, notice_status,
+         notice_url, max_time, use_time,service_name,product_type,case result_time when null then 0 else unix_timestamp(result_time)-UNIX_TIMESTAMP(create_time) end time_consuming,city,city_id from order_info a
+    </sql>
+
+    <select id="selectOrderInfoList" parameterType="OrderInfo" resultMap="OrderInfoResult">
+        <include refid="selectOrderInfoVo"/>
+        <where>  
+            <if test="sysOrderNo != null  and sysOrderNo != ''"> and sys_order_no = #{sysOrderNo}</if>
+            <if test="merOrderNo != null  and merOrderNo != ''"> and mer_order_no = #{merOrderNo}</if>
+            <if test="merNo != null  and merNo != ''"> and mer_no = #{merNo}</if>
+            <if test="merId != null  and merId != ''"> and mer_id = #{merId}</if>
+            <if test="channelId != null  and channelId != ''"> and channel_id = #{channelId}</if>
+            <if test="productType != null  and productType != ''"> and product_type = #{productType}</if>
+            <if test="serviceName != null  and serviceName != ''"> and service_name = #{serviceName}</if>
+            <if test="noticeStatus != null"> and notice_status = #{noticeStatus}</if>
+            <if test="tel != null  and tel != ''"> and tel = #{tel}</if>
+            <if test="createTime != null "> and create_time &gt;= #{createTime}</if>
+            <if test="resultTime != null "> and create_time &lt;= #{resultTime}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="amtS != null and amtS != ''"> and amt &gt;= #{amtS}*100</if>
+            <if test="amtE != null and amtE != ''"> and amt &lt;= #{amtE}*100</if>
+            <if test="cityId != null and cityId != ''"> and city_id = #{cityId}</if>
+            <if test="areaId != null and areaId != ''"> and area_id = #{areaId}</if>
+            <if test="companyId != null and companyId != ''"> and company_id = #{companyId}</if>
+        </where>
+        order by id desc
+    </select>
+    <select id="selectOrderInfoListReport" parameterType="OrderInfo" resultMap="OrderInfoReportResult">
+        select * from (select  DATE_FORMAT(create_time,'%Y%-%m-%d %H:%i') as date,count(1) as count,amt,service_name from order_info
+        <where>
+        	<if test="createTime != null "> and create_time &gt;= #{createTime}</if>
+            <if test="resultTime != null "> and create_time &lt;= #{resultTime}</if>
+            <if test="merId != null  and merId != ''"> and mer_id = #{merId}</if>
+            <if test="companyId != null  and companyId != ''"> and company_id = #{companyId}</if>
+        </where>
+        group by  DATE_FORMAT(create_time,'%Y%-%m-%d %H:%i'),amt,service_name order by DATE_FORMAT(create_time,'%Y%-%m-%d %H:%i') desc LIMIT 0,20) a
+    </select>
+    <select id="selectMerOrderInfoListReport" parameterType="OrderInfo" resultMap="OrderInfoReportResult">
+        select a.*,b.mer_name from (select count(1) count,mer_id,sum(amt/100) sum_amt,
+        sum(case `status` when 2 then 1 else 0 end) suc_count,
+        ROUND(sum(case `status` when 2 then amt/100 else 0 end),2) suc_amt,
+        ROUND(sum(case `status` when 2 then mer_act_amt/100 else 0 end),2) sys_amt,
+        ROUND(sum(case `status` when 2 then fee/100 else 0 end),2) suc_fee,
+        CONCAT(ROUND(sum(case `status` when 2 then 1 else 0 end)/count(1)*100,2),'%') rate,
+        avg(case result_time when null then 0 else unix_timestamp(result_time)-UNIX_TIMESTAMP(create_time) end) time_consuming
+         from order_info
+        <where>
+        	<if test="createTime != null "> and create_time &gt;= #{createTime}</if>
+            <if test="resultTime != null "> and create_time &lt;= #{resultTime}</if>
+            <if test="merId != null  and merId != ''"> and mer_id = #{merId}</if>
+            <if test="channelId != null  and channelId != ''"> and channel_id = #{channelId}</if>
+            <if test="companyId != null  and companyId != ''"> and company_id = #{companyId}</if>
+        </where>
+        GROUP BY mer_id) a,mer_info b where a.mer_id=b.id
+    </select>
+    <select id="selectMerOrderInfoListAmtReport" parameterType="OrderInfo" resultMap="OrderInfoReportResult">
+        select count(1) count,amt/100 amt,sum(amt/100) sum_amt,
+        sum(case `status` when 2 then 1 else 0 end) suc_count,
+        ROUND(sum(case `status` when 2 then amt/100 else 0 end),2) suc_amt,
+        ROUND(sum(case `status` when 2 then mer_act_amt/100 else 0 end),2) sys_amt,
+        ROUND(sum(case `status` when 2 then fee/100 else 0 end),2) suc_fee,
+        CONCAT(ROUND(sum(case `status` when 2 then 1 else 0 end)/count(1)*100,2),'%') rate,
+        avg(case result_time when null then 0 else unix_timestamp(result_time)-UNIX_TIMESTAMP(create_time) end) time_consuming from order_info
+        <where>
+        	<if test="createTime != null "> and create_time &gt;= #{createTime}</if>
+            <if test="resultTime != null "> and create_time &lt;= #{resultTime}</if>
+            <if test="merId != null  and merId != ''"> and mer_id = #{merId}</if>
+            <if test="channelId != null  and channelId != ''"> and channel_id = #{channelId}</if>
+            <if test="companyId != null  and companyId != ''"> and company_id = #{companyId}</if>
+        </where>
+        GROUP BY amt
+    </select>
+    <select id="selectChannelOrderInfoListReport" parameterType="OrderInfo" resultMap="OrderInfoReportResult">
+        select a.*,b.channel_name from (select count(1) count,channel_id,sum(amt/100) sum_amt,
+        sum(case `status` when 2 then 1 else 0 end) suc_count,
+        ROUND(sum(case `status` when 2 then amt/100 else 0 end),2) suc_amt,
+        ROUND(sum(case `status` when 2 then sys_act_amt/100 else 0 end),2) sys_amt,
+        ROUND(sum(case `status` when 2 then (select fee from order_info t where t.sys_order_no= c.sys_order_no)/100 else 0 end),2) suc_fee,
+        CONCAT(ROUND(sum(case `status` when 2 then 1 else 0 end)/count(1)*100,2),'%') rate,
+        avg(case result_date when null then 0 else unix_timestamp(result_date)-UNIX_TIMESTAMP(create_time) end) time_consuming from channel_order_info c
+        <where>
+        	<if test="createTime != null "> and create_time &gt;= #{createTime}</if>
+            <if test="resultTime != null "> and create_time &lt;= #{resultTime}</if>
+            <if test="merId != null  and merId != ''"> and mer_id = #{merId}</if>
+            <if test="channelId != null  and channelId != ''"> and channel_id = #{channelId}</if>
+            <if test="companyId != null  and companyId != ''"> and channel_id in (select id from channel_info where company_id=#{companyId})</if>
+        </where>
+        GROUP BY channel_id) a,channel_info b where a.channel_id=b.id
+    </select>
+    <select id="selectChannelOrderInfoListAmtReport" parameterType="OrderInfo" resultMap="OrderInfoReportResult">
+        select count(1) count,amt/100 amt ,sum(amt/100) sum_amt,
+        sum(case `status` when 2 then 1 else 0 end) suc_count,
+        ROUND(sum(case `status` when 2 then amt/100 else 0 end),2) suc_amt,
+        ROUND(sum(case `status` when 2 then sys_act_amt/100 else 0 end),2) sys_amt,
+        ROUND(sum(case `status` when 2 then (select fee from order_info t where t.sys_order_no= c.sys_order_no)/100 else 0 end),2) suc_fee,
+        CONCAT(ROUND(sum(case `status` when 2 then 1 else 0 end)/count(1)*100,2),'%') rate,
+        avg(case result_date when null then 0 else unix_timestamp(result_date)-UNIX_TIMESTAMP(create_time) end) time_consuming from channel_order_info c
+        <where>
+        	<if test="createTime != null "> and create_time &gt;= #{createTime}</if>
+            <if test="resultTime != null "> and create_time &lt;= #{resultTime}</if>
+            <if test="merId != null  and merId != ''"> and mer_id = #{merId}</if>
+            <if test="channelId != null  and channelId != ''"> and channel_id = #{channelId}</if>
+            <if test="companyId != null  and companyId != ''"> and channel_id in (select id from channel_info where company_id=#{companyId})</if>
+        </where>
+        GROUP BY amt
+    </select>
+    
+    <select id="selectOrderInfoById" parameterType="Long" resultMap="OrderInfoResult">
+        <include refid="selectOrderInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertOrderInfo" parameterType="OrderInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into order_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sysOrderNo != null and sysOrderNo != ''">sys_order_no,</if>
+            <if test="merOrderNo != null and merOrderNo != ''">mer_order_no,</if>
+            <if test="thirdOrderNo != null">third_order_no,</if>
+            <if test="merNo != null">mer_no,</if>
+            <if test="thirdMerchantCode != null">third_merchant_code,</if>
+            <if test="thirdCode != null">third_code,</if>
+            <if test="tel != null">tel,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="province != null and province != ''">province,</if>
+            <if test="amt != null">amt,</if>
+            <if test="sysActAmt != null">sys_act_amt,</if>
+            <if test="channelActAmt != null">channel_act_amt,</if>
+            <if test="channelBalance != null">channel_balance,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="resultTime != null">result_time,</if>
+            <if test="postMsg != null">post_msg,</if>
+            <if test="asynMsg != null">asyn_msg,</if>
+            <if test="channelDealCode != null">channel_deal_code,</if>
+            <if test="channelDealMsg != null">channel_deal_msg,</if>
+            <if test="status != null">status,</if>
+            <if test="merId != null">mer_id,</if>
+            <if test="rate != null">rate,</if>
+            <if test="channelCode != null">channel_code,</if>
+            <if test="channelId != null">channel_id,</if>
+            <if test="rateType != null">rate_type,</if>
+            <if test="fee != null">fee,</if>
+            <if test="searchCount != null">search_count,</if>
+            <if test="noticeCount != null">notice_count,</if>
+            <if test="noticeStatus != null">notice_status,</if>
+            <if test="noticeUrl != null">notice_url,</if>
+            <if test="maxTime != null">max_time,</if>
+            <if test="useTime != null">use_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sysOrderNo != null and sysOrderNo != ''">#{sysOrderNo},</if>
+            <if test="merOrderNo != null and merOrderNo != ''">#{merOrderNo},</if>
+            <if test="thirdOrderNo != null">#{thirdOrderNo},</if>
+            <if test="merNo != null">#{merNo},</if>
+            <if test="thirdMerchantCode != null">#{thirdMerchantCode},</if>
+            <if test="thirdCode != null">#{thirdCode},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="province != null and province != ''">#{province},</if>
+            <if test="amt != null">#{amt},</if>
+            <if test="sysActAmt != null">#{sysActAmt},</if>
+            <if test="channelActAmt != null">#{channelActAmt},</if>
+            <if test="channelBalance != null">#{channelBalance},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="resultTime != null">#{resultTime},</if>
+            <if test="postMsg != null">#{postMsg},</if>
+            <if test="asynMsg != null">#{asynMsg},</if>
+            <if test="channelDealCode != null">#{channelDealCode},</if>
+            <if test="channelDealMsg != null">#{channelDealMsg},</if>
+            <if test="status != null">#{status},</if>
+            <if test="merId != null">#{merId},</if>
+            <if test="rate != null">#{rate},</if>
+            <if test="channelCode != null">#{channelCode},</if>
+            <if test="channelId != null">#{channelId},</if>
+            <if test="rateType != null">#{rateType},</if>
+            <if test="fee != null">#{fee},</if>
+            <if test="searchCount != null">#{searchCount},</if>
+            <if test="noticeCount != null">#{noticeCount},</if>
+            <if test="noticeStatus != null">#{noticeStatus},</if>
+            <if test="noticeUrl != null">#{noticeUrl},</if>
+            <if test="maxTime != null">#{maxTime},</if>
+            <if test="useTime != null">#{useTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOrderInfo" parameterType="OrderInfo">
+        update order_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sysOrderNo != null and sysOrderNo != ''">sys_order_no = #{sysOrderNo},</if>
+            <if test="merOrderNo != null and merOrderNo != ''">mer_order_no = #{merOrderNo},</if>
+            <if test="thirdOrderNo != null">third_order_no = #{thirdOrderNo},</if>
+            <if test="merNo != null">mer_no = #{merNo},</if>
+            <if test="thirdMerchantCode != null">third_merchant_code = #{thirdMerchantCode},</if>
+            <if test="thirdCode != null">third_code = #{thirdCode},</if>
+            <if test="tel != null">tel = #{tel},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="province != null and province != ''">province = #{province},</if>
+            <if test="amt != null">amt = #{amt},</if>
+            <if test="sysActAmt != null">sys_act_amt = #{sysActAmt},</if>
+            <if test="channelActAmt != null">channel_act_amt = #{channelActAmt},</if>
+            <if test="channelBalance != null">channel_balance = #{channelBalance},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="resultTime != null">result_time = #{resultTime},</if>
+            <if test="postMsg != null">post_msg = #{postMsg},</if>
+            <if test="asynMsg != null">asyn_msg = #{asynMsg},</if>
+            <if test="channelDealCode != null">channel_deal_code = #{channelDealCode},</if>
+            <if test="channelDealMsg != null">channel_deal_msg = #{channelDealMsg},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="merId != null">mer_id = #{merId},</if>
+            <if test="rate != null">rate = #{rate},</if>
+            <if test="channelCode != null">channel_code = #{channelCode},</if>
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="rateType != null">rate_type = #{rateType},</if>
+            <if test="fee != null">fee = #{fee},</if>
+            <if test="searchCount != null">search_count = #{searchCount},</if>
+            <if test="noticeCount != null">notice_count = #{noticeCount},</if>
+            <if test="noticeStatus != null">notice_status = #{noticeStatus},</if>
+            <if test="noticeUrl != null">notice_url = #{noticeUrl},</if>
+            <if test="maxTime != null">max_time = #{maxTime},</if>
+            <if test="useTime != null">use_time = #{useTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOrderInfoById" parameterType="Long">
+        delete from order_info where id = #{id}
+    </delete>
+
+    <delete id="deleteOrderInfoByIds" parameterType="String">
+        delete from order_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

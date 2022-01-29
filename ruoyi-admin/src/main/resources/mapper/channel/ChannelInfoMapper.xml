@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.channel.mapper.ChannelInfoMapper">
+    
+    <resultMap type="ChannelInfo" id="ChannelInfoResult">
+        <result property="id"    column="id"    />
+        <result property="channelCode"    column="channel_code"    />
+        <result property="groupCode"    column="group_code"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="weight"    column="weight"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createIp"    column="create_ip"    />
+        <result property="creditAmt"    column="credit_amt"    />
+        <result property="creditUseAmt"    column="credit_use_amt"    />
+        <result property="creditBalanceAmt"    column="credit_balance_amt"    />
+        <result property="creditFixAmt"    column="credit_fix_amt"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="channelShortName"    column="channel_short_name"    />
+    </resultMap>
+
+    <sql id="selectChannelInfoVo">
+        select com.id as company_id,com.company_name,c.id, channel_code,c.group_code, channel_name,channel_short_name, weight, c.create_time, c.update_time, c.status,create_by,create_ip,
+        a.credit_amt/100 credit_amt,a.credit_use_amt/100 credit_use_amt,a.credit_balance_amt/100 credit_balance_amt,a.credit_fix_amt/100 credit_fix_amt
+       FROM channel_info c LEFT JOIN channel_account a on c.id = a.channel_id LEFT JOIN company_info com on com.id = c.company_id
+    </sql>
+
+    <select id="selectChannelInfoList" parameterType="ChannelInfo" resultMap="ChannelInfoResult">
+        <include refid="selectChannelInfoVo"/>
+        <where>
+            <if test="channelCode != null  and channelCode != ''"> and channel_code = #{channelCode}</if>
+            <if test="channelName != null  and channelName != ''"> and channel_name like concat('%', #{channelName}, '%')</if>
+            <if test="status != null "> and c.status = #{status}</if>
+            <if test="id != null "> and c.id = #{id}</if>
+            <if test="companyId != null "> and c.company_id = #{companyId}</if>
+        </where>
+    </select>
+    
+    <select id="selectChannelInfoById" parameterType="Long" resultMap="ChannelInfoResult">
+        <include refid="selectChannelInfoVo"/>
+        where c.id = #{id}
+    </select>
+    <select id="selectChannelInfoByChannelCode" parameterType="String" resultMap="ChannelInfoResult">
+        select * from channel_info
+        where channel_code = #{channelCode}
+    </select>
+        
+    <insert id="insertChannelInfo" parameterType="ChannelInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into channel_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="channelCode != null and channelCode != ''">channel_code,</if>
+            <if test="groupCode != null and groupCode != ''">group_code,</if>
+            <if test="channelName != null and channelName != ''">channel_name,</if>
+            <if test="channelShortName != null and channelShortName != ''">channel_short_name,</if>
+            <if test="weight != null and weight != ''">weight,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createIp != null">create_ip,</if>
+            <if test="companyId != null">company_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="channelCode != null and channelCode != ''">#{channelCode},</if>
+            <if test="groupCode != null and groupCode != ''">#{groupCode},</if>
+            <if test="channelName != null and channelName != ''">#{channelName},</if>
+            <if test="channelShortName != null and channelShortName != ''">#{channelShortName},</if>
+            <if test="weight != null and weight != ''">#{weight},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createIp != null">#{createIp},</if>
+            <if test="companyId != null">#{companyId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChannelInfo" parameterType="ChannelInfo">
+        update channel_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="channelCode != null and channelCode != ''">channel_code = #{channelCode},</if>
+            <if test="channelName != null and channelName != ''">channel_name = #{channelName},</if>
+            <if test="channelShortName != null and channelShortName != ''">channel_short_name = #{channelShortName},</if>
+            <if test="weight != null and weight != ''">weight = #{weight},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="companyId != null">company_id = #{companyId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChannelInfoById" parameterType="Long">
+        delete from channel_info where id = #{id}
+    </delete>
+
+    <delete id="deleteChannelInfoByIds" parameterType="String">
+        delete from channel_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

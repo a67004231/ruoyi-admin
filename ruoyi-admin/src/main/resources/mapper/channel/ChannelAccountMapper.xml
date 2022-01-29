@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.channel.mapper.ChannelAccountMapper">
+    
+    <resultMap type="ChannelAccount" id="ChannelAccountResult">
+        <result property="id"    column="id"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="creditAmt"    column="credit_amt"    />
+        <result property="creditUseAmt"    column="credit_use_amt"    />
+        <result property="creditBalanceAmt"    column="credit_balance_amt"    />
+        <result property="creditFixAmt"    column="credit_fix_amt"    />
+        <result property="status"    column="status"    />
+        <result property="version"    column="version"    />
+    </resultMap>
+
+    <sql id="selectChannelAccountVo">
+        select id, channel_id, credit_amt, credit_use_amt, credit_balance_amt, credit_fix_amt, status, version from channel_account
+    </sql>
+
+    <select id="selectChannelAccountList" parameterType="ChannelAccount" resultMap="ChannelAccountResult">
+        <include refid="selectChannelAccountVo"/>
+        <where>  
+            <if test="channelId != null "> and channel_id = #{channelId}</if>
+            <if test="creditAmt != null "> and credit_amt = #{creditAmt}</if>
+            <if test="creditUseAmt != null "> and credit_use_amt = #{creditUseAmt}</if>
+            <if test="creditBalanceAmt != null "> and credit_balance_amt = #{creditBalanceAmt}</if>
+            <if test="creditFixAmt != null "> and credit_fix_amt = #{creditFixAmt}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="version != null "> and version = #{version}</if>
+        </where>
+    </select>
+    
+    <select id="selectChannelAccountById" parameterType="Long" resultMap="ChannelAccountResult">
+        <include refid="selectChannelAccountVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertChannelAccount" parameterType="ChannelAccount">
+        insert into channel_account
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="channelId != null">channel_id,</if>
+            <if test="creditAmt != null">credit_amt,</if>
+            <if test="creditUseAmt != null">credit_use_amt,</if>
+            <if test="creditBalanceAmt != null">credit_balance_amt,</if>
+            <if test="creditFixAmt != null">credit_fix_amt,</if>
+            <if test="status != null">status,</if>
+            <if test="version != null">version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="channelId != null">#{channelId},</if>
+            <if test="creditAmt != null">#{creditAmt},</if>
+            <if test="creditUseAmt != null">#{creditUseAmt},</if>
+            <if test="creditBalanceAmt != null">#{creditBalanceAmt},</if>
+            <if test="creditFixAmt != null">#{creditFixAmt},</if>
+            <if test="status != null">#{status},</if>
+            <if test="version != null">#{version},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChannelAccount" parameterType="ChannelAccount">
+        update channel_account
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="creditAmt != null">credit_amt = #{creditAmt},</if>
+            <if test="creditUseAmt != null">credit_use_amt = #{creditUseAmt},</if>
+            <if test="creditBalanceAmt != null">credit_balance_amt = #{creditBalanceAmt},</if>
+            <if test="creditFixAmt != null">credit_fix_amt = #{creditFixAmt},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="version != null">version = #{version},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChannelAccountById" parameterType="Long">
+        delete from channel_account where id = #{id}
+    </delete>
+
+    <delete id="deleteChannelAccountByIds" parameterType="String">
+        delete from channel_account where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

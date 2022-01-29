@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.company.mapper.CompanyInfoMapper">
+    
+    <resultMap type="CompanyInfo" id="CompanyInfoResult">
+        <result property="id"    column="id"    />
+        <result property="companyNo"    column="company_no"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="phone"    column="phone"    />
+        <result property="email"    column="email"    />
+        <result property="status"    column="status"    />
+        <result property="routeType"    column="route_type"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCompanyInfoVo">
+        select id, company_no, company_name, phone, email, status, create_time, update_time,route_type from company_info
+    </sql>
+
+    <select id="selectCompanyInfoList" parameterType="CompanyInfo" resultMap="CompanyInfoResult">
+        <include refid="selectCompanyInfoVo"/>
+        <where>  
+            <if test="companyNo != null  and companyNo != ''"> and company_no = #{companyNo}</if>
+            <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="id != null "> and id =  #{id}</if>
+        </where>
+    </select>
+    
+    <select id="selectCompanyInfoById" parameterType="Long" resultMap="CompanyInfoResult">
+        <include refid="selectCompanyInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCompanyInfo" parameterType="CompanyInfo">
+        insert into company_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="companyNo != null">company_no,</if>
+            <if test="companyName != null">company_name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="email != null">email,</if>
+            <if test="status != null">status,</if>
+            <if test="routeType != null">route_type,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="companyNo != null">#{companyNo},</if>
+            <if test="companyName != null">#{companyName},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="email != null">#{email},</if>
+            <if test="status != null">#{status},</if>
+            <if test="routeType != null">#{routeType},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCompanyInfo" parameterType="CompanyInfo">
+        update company_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyNo != null">company_no = #{companyNo},</if>
+            <if test="companyName != null">company_name = #{companyName},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="routeType != null">route_type = #{routeType},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCompanyInfoById" parameterType="Long">
+        delete from company_info where id = #{id}
+    </delete>
+
+    <delete id="deleteCompanyInfoByIds" parameterType="String">
+        delete from company_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

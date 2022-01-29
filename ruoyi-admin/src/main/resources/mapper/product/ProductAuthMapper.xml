@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.product.mapper.ProductAuthMapper">
+    
+    <resultMap type="ProductAuth" id="ProductAuthResult">
+        <result property="id"    column="id"    />
+        <result property="merId"    column="mer_id"    />
+        <result property="merNo"    column="mer_no"    />
+        <result property="merName"    column="mer_name"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="channelCode"    column="channel_code"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="type"    column="type"    />
+        <result property="operators"    column="operators"    />
+        <result property="areaIds"    column="area_ids"    />
+        <result property="hasAmout"    column="has_amout"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="status"    column="status"    />
+        <result property="rate"    column="rate"    />
+        <result property="rateType"    column="rate_type"    />
+        <result property="tableType"    column="table_type"    />
+    </resultMap>
+    <resultMap type="ProductAuthDto" id="ProductAuthDtoResult">
+        <result property="id"    column="id"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="productCode"    column="product_code"    />
+        <result property="productName"    column="product_name"    />
+        <result property="parentName"    column="parent_name"    />
+        <result property="rate"    column="rate"    />
+
+    </resultMap>
+    <sql id="selectProductAuthVo">
+        select id, mer_id, mer_no, mer_name, channel_id, channel_code, channel_name, company_id, company_name, type, operators, area_ids, has_amout, create_time, update_time, status, rate, rate_type, table_type from product_auth
+    </sql>
+    <select id="selectMerProductAuthList" parameterType="ProductAuthDto" resultMap="ProductAuthDtoResult">
+        SELECT a.id,a.product_code,a.rate,b.name as product_name,(SELECT p.name from product_info p where b.parent_id = p.id)as parent_name from mer_product_auth a
+        LEFT JOIN product_info b on a.product_id=b.id
+        <where>
+            <if test="merId != null  and merId != ''"> and a.mer_id = #{merId}</if>
+            <if test="productCode != null "> and a.product_code = #{productCode}</if>
+        </where>
+    </select>
+    <select id="selectChannelProductAuthList" parameterType="ProductAuthDto" resultMap="ProductAuthDtoResult">
+        SELECT a.id,a.product_code,a.rate,b.name as product_name,(SELECT p.name from product_info p where b.parent_id = p.id)as parent_name from channel_product_auth a
+        LEFT JOIN product_info b on a.product_id=b.id
+        <where>
+            <if test="channelId != null  and channelId != ''"> and a.channel_id = #{channelId}</if>
+            <if test="productCode != null "> and a.product_code = #{productCode}</if>
+        </where>
+    </select>
+    <select id="selectProductAuthList" parameterType="ProductAuth" resultMap="ProductAuthResult">
+        <include refid="selectProductAuthVo"/>
+        <where>
+            <if test="merId != null  and merId != ''"> and mer_id = #{merId}</if>
+            <if test="merNo != null  and merNo != ''"> and mer_no = #{merNo}</if>
+            <if test="merName != null  and merName != ''"> and mer_name like concat('%', #{merName}, '%')</if>
+            <if test="channelId != null "> and channel_id = #{channelId}</if>
+            <if test="channelCode != null  and channelCode != ''"> and channel_code = #{channelCode}</if>
+            <if test="channelName != null  and channelName != ''"> and channel_name like concat('%', #{channelName}, '%')</if>
+            <if test="companyId != null "> and company_id = #{companyId}</if>
+            <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="operators != null  and operators != ''"> and operators = #{operators}</if>
+            <if test="areaIds != null  and areaIds != ''"> and area_ids = #{areaIds}</if>
+            <if test="hasAmout != null  and hasAmout != ''"> and has_amout = #{hasAmout}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="rateType != null "> and rate_type = #{rateType}</if>
+            <if test="tableType != null "> and table_type = #{tableType}</if>
+        </where>
+    </select>
+    
+    <select id="selectProductAuthById" parameterType="Long" resultMap="ProductAuthResult">
+        <include refid="selectProductAuthVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProductAuth" parameterType="ProductAuth" useGeneratedKeys="true" keyProperty="id">
+        insert into product_auth
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="merId != null">mer_id,</if>
+            <if test="merNo != null">mer_no,</if>
+            <if test="merName != null">mer_name,</if>
+            <if test="channelId != null">channel_id,</if>
+            <if test="channelCode != null">channel_code,</if>
+            <if test="channelName != null">channel_name,</if>
+            <if test="companyId != null">company_id,</if>
+            <if test="companyName != null">company_name,</if>
+            <if test="type != null">type,</if>
+            <if test="operators != null">operators,</if>
+            <if test="areaIds != null">area_ids,</if>
+            <if test="hasAmout != null">has_amout,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="status != null">status,</if>
+            <if test="rate != null">rate,</if>
+            <if test="rateType != null">rate_type,</if>
+            <if test="tableType != null">table_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="merId != null">#{merId},</if>
+            <if test="merNo != null">#{merNo},</if>
+            <if test="merName != null">#{merName},</if>
+            <if test="channelId != null">#{channelId},</if>
+            <if test="channelCode != null">#{channelCode},</if>
+            <if test="channelName != null">#{channelName},</if>
+            <if test="companyId != null">#{companyId},</if>
+            <if test="companyName != null">#{companyName},</if>
+            <if test="type != null">#{type},</if>
+            <if test="operators != null">#{operators},</if>
+            <if test="areaIds != null">#{areaIds},</if>
+            <if test="hasAmout != null">#{hasAmout},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="rate != null">#{rate},</if>
+            <if test="rateType != null">#{rateType},</if>
+            <if test="tableType != null">#{tableType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProductAuth" parameterType="ProductAuth">
+        update product_auth
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="merId != null">mer_id = #{merId},</if>
+            <if test="merNo != null">mer_no = #{merNo},</if>
+            <if test="merName != null">mer_name = #{merName},</if>
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="channelCode != null">channel_code = #{channelCode},</if>
+            <if test="channelName != null">channel_name = #{channelName},</if>
+            <if test="companyId != null">company_id = #{companyId},</if>
+            <if test="companyName != null">company_name = #{companyName},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="operators != null">operators = #{operators},</if>
+            <if test="areaIds != null">area_ids = #{areaIds},</if>
+            <if test="hasAmout != null">has_amout = #{hasAmout},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="rate != null">rate = #{rate},</if>
+            <if test="rateType != null">rate_type = #{rateType},</if>
+            <if test="tableType != null">table_type = #{tableType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProductAuthById" parameterType="Long">
+        delete from product_auth where id = #{id}
+    </delete>
+
+    <delete id="deleteProductAuthByIds" parameterType="String">
+        delete from product_auth where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

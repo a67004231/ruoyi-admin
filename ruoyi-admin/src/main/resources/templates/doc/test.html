@@ -1,0 +1,739 @@
+<html><head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width initial-scale=1">
+    <title>采购API (3)</title><link href="https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css"><style type="text/css">html {overflow-x: initial !important;}:root { --bg-color:#ffffff; --text-color:#333333; --select-text-bg-color:#B5D6FC; --select-text-font-color:auto; --monospace:"Lucida Console",Consolas,"Courier",monospace; }
+html { font-size: 14px; background-color: var(--bg-color); color: var(--text-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0px; padding: 0px; height: auto; bottom: 0px; top: 0px; left: 0px; right: 0px; font-size: 1rem; line-height: 1.42857; overflow-x: hidden; background: inherit; tab-size: 4; }
+iframe { margin: auto; }
+a.url { word-break: break-all; }
+a:active, a:hover { outline: 0px; }
+.in-text-selection, ::selection { text-shadow: none; background: var(--select-text-bg-color); color: var(--select-text-font-color); }
+#write { margin: 0px auto; height: auto; width: inherit; word-break: normal; overflow-wrap: break-word; position: relative; white-space: normal; overflow-x: visible; padding-top: 40px; }
+#write.first-line-indent p { text-indent: 2em; }
+#write.first-line-indent li p, #write.first-line-indent p * { text-indent: 0px; }
+#write.first-line-indent li { margin-left: 2em; }
+.for-image #write { padding-left: 8px; padding-right: 8px; }
+body.typora-export { padding-left: 30px; padding-right: 30px; }
+.typora-export .footnote-line, .typora-export li, .typora-export p { white-space: pre-wrap; }
+@media screen and (max-width: 500px) {
+    body.typora-export { padding-left: 0px; padding-right: 0px; }
+    #write { padding-left: 20px; padding-right: 20px; }
+    .CodeMirror-sizer { margin-left: 0px !important; }
+    .CodeMirror-gutters { display: none !important; }
+}
+#write li > figure:last-child { margin-bottom: 0.5rem; }
+#write ol, #write ul { position: relative; }
+img { max-width: 100%; vertical-align: middle; }
+button, input, select, textarea { color: inherit; font: inherit; }
+input[type="checkbox"], input[type="radio"] { line-height: normal; padding: 0px; }
+*, ::after, ::before { box-sizing: border-box; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p, #write pre { width: inherit; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p { position: relative; }
+p { line-height: inherit; }
+h1, h2, h3, h4, h5, h6 { break-after: avoid-page; break-inside: avoid; orphans: 2; }
+p { orphans: 4; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.6rem; }
+h4 { font-size: 1.4rem; }
+h5 { font-size: 1.2rem; }
+h6 { font-size: 1rem; }
+.md-math-block, .md-rawblock, h1, h2, h3, h4, h5, h6, p { margin-top: 1rem; margin-bottom: 1rem; }
+.hidden { display: none; }
+.md-blockmeta { color: rgb(204, 204, 204); font-weight: 700; font-style: italic; }
+a { cursor: pointer; }
+sup.md-footnote { padding: 2px 4px; background-color: rgba(238, 238, 238, 0.7); color: rgb(85, 85, 85); border-radius: 4px; cursor: pointer; }
+sup.md-footnote a, sup.md-footnote a:hover { color: inherit; text-transform: inherit; text-decoration: inherit; }
+#write input[type="checkbox"] { cursor: pointer; width: inherit; height: inherit; }
+figure { overflow-x: auto; margin: 1.2em 0px; max-width: calc(100% + 16px); padding: 0px; }
+figure > table { margin: 0px !important; }
+tr { break-inside: avoid; break-after: auto; }
+thead { display: table-header-group; }
+table { border-collapse: collapse; border-spacing: 0px; width: 100%; overflow: auto; break-inside: auto; text-align: left; }
+table.md-table td { min-width: 32px; }
+.CodeMirror-gutters { border-right: 0px; background-color: inherit; }
+.CodeMirror-linenumber { user-select: none; }
+.CodeMirror { text-align: left; }
+.CodeMirror-placeholder { opacity: 0.3; }
+.CodeMirror pre { padding: 0px 4px; }
+.CodeMirror-lines { padding: 0px; }
+div.hr:focus { cursor: none; }
+#write pre { white-space: pre-wrap; }
+#write.fences-no-line-wrapping pre { white-space: pre; }
+#write pre.ty-contain-cm { white-space: normal; }
+.CodeMirror-gutters { margin-right: 4px; }
+.md-fences { font-size: 0.9rem; display: block; break-inside: avoid; text-align: left; overflow: visible; white-space: pre; background: inherit; position: relative !important; }
+.md-diagram-panel { width: 100%; margin-top: 10px; text-align: center; padding-top: 0px; padding-bottom: 8px; overflow-x: auto; }
+#write .md-fences.mock-cm { white-space: pre-wrap; }
+.md-fences.md-fences-with-lineno { padding-left: 0px; }
+#write.fences-no-line-wrapping .md-fences.mock-cm { white-space: pre; overflow-x: auto; }
+.md-fences.mock-cm.md-fences-with-lineno { padding-left: 8px; }
+.CodeMirror-line, twitterwidget { break-inside: avoid; }
+.footnotes { opacity: 0.8; font-size: 0.9rem; margin-top: 1em; margin-bottom: 1em; }
+.footnotes + .footnotes { margin-top: 0px; }
+.md-reset { margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: top; background: 0px 0px; text-decoration: none; text-shadow: none; float: none; position: static; width: auto; height: auto; white-space: nowrap; cursor: inherit; -webkit-tap-highlight-color: transparent; line-height: normal; font-weight: 400; text-align: left; box-sizing: content-box; direction: ltr; }
+li div { padding-top: 0px; }
+blockquote { margin: 1rem 0px; }
+li .mathjax-block, li p { margin: 0.5rem 0px; }
+li { margin: 0px; position: relative; }
+blockquote > :last-child { margin-bottom: 0px; }
+blockquote > :first-child, li > :first-child { margin-top: 0px; }
+.footnotes-area { color: rgb(136, 136, 136); margin-top: 0.714rem; padding-bottom: 0.143rem; white-space: normal; }
+#write .footnote-line { white-space: pre-wrap; }
+@media print {
+    body, html { border: 1px solid transparent; height: 99%; break-after: avoid; break-before: avoid; }
+    #write { margin-top: 0px; padding-top: 0px; border-color: transparent !important; }
+    .typora-export * { -webkit-print-color-adjust: exact; }
+    html.blink-to-pdf { font-size: 13px; }
+    .typora-export #write { padding-left: 32px; padding-right: 32px; padding-bottom: 0px; break-after: avoid; }
+    .typora-export #write::after { height: 0px; }
+}
+.footnote-line { margin-top: 0.714em; font-size: 0.7em; }
+a img, img a { cursor: pointer; }
+pre.md-meta-block { font-size: 0.8rem; min-height: 0.8rem; white-space: pre-wrap; background: rgb(204, 204, 204); display: block; overflow-x: hidden; }
+p > .md-image:only-child:not(.md-img-error) img, p > img:only-child { display: block; margin: auto; }
+p > .md-image:only-child { display: inline-block; width: 100%; }
+#write .MathJax_Display { margin: 0.8em 0px 0px; }
+.md-math-block { width: 100%; }
+.md-math-block:not(:empty)::after { display: none; }
+[contenteditable="true"]:active, [contenteditable="true"]:focus { outline: 0px; box-shadow: none; }
+.md-task-list-item { position: relative; list-style-type: none; }
+.task-list-item.md-task-list-item { padding-left: 0px; }
+.md-task-list-item > input { position: absolute; top: 0px; left: 0px; margin-left: -1.2em; margin-top: calc(1em - 10px); border: none; }
+.math { font-size: 1rem; }
+.md-toc { min-height: 3.58rem; position: relative; font-size: 0.9rem; border-radius: 10px; }
+.md-toc-content { position: relative; margin-left: 0px; }
+.md-toc-content::after, .md-toc::after { display: none; }
+.md-toc-item { display: block; color: rgb(65, 131, 196); }
+.md-toc-item a { text-decoration: none; }
+.md-toc-inner:hover { text-decoration: underline; }
+.md-toc-inner { display: inline-block; cursor: pointer; }
+.md-toc-h1 .md-toc-inner { margin-left: 0px; font-weight: 700; }
+.md-toc-h2 .md-toc-inner { margin-left: 2em; }
+.md-toc-h3 .md-toc-inner { margin-left: 4em; }
+.md-toc-h4 .md-toc-inner { margin-left: 6em; }
+.md-toc-h5 .md-toc-inner { margin-left: 8em; }
+.md-toc-h6 .md-toc-inner { margin-left: 10em; }
+@media screen and (max-width: 48em) {
+    .md-toc-h3 .md-toc-inner { margin-left: 3.5em; }
+    .md-toc-h4 .md-toc-inner { margin-left: 5em; }
+    .md-toc-h5 .md-toc-inner { margin-left: 6.5em; }
+    .md-toc-h6 .md-toc-inner { margin-left: 8em; }
+}
+a.md-toc-inner { font-size: inherit; font-style: inherit; font-weight: inherit; line-height: inherit; }
+.footnote-line a:not(.reversefootnote) { color: inherit; }
+.md-attr { display: none; }
+.md-fn-count::after { content: "."; }
+code, pre, samp, tt { font-family: var(--monospace); }
+kbd { margin: 0px 0.1em; padding: 0.1em 0.6em; font-size: 0.8em; color: rgb(36, 39, 41); background: rgb(255, 255, 255); border: 1px solid rgb(173, 179, 185); border-radius: 3px; box-shadow: rgba(12, 13, 14, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 0px 0px 2px inset; white-space: nowrap; vertical-align: middle; }
+.md-comment { color: rgb(162, 127, 3); opacity: 0.8; font-family: var(--monospace); }
+code { text-align: left; vertical-align: initial; }
+a.md-print-anchor { white-space: pre !important; border-width: initial !important; border-style: none !important; border-color: initial !important; display: inline-block !important; position: absolute !important; width: 1px !important; right: 0px !important; outline: 0px !important; background: 0px 0px !important; text-decoration: initial !important; text-shadow: initial !important; }
+.md-inline-math .MathJax_SVG .noError { display: none !important; }
+.html-for-mac .inline-math-svg .MathJax_SVG { vertical-align: 0.2px; }
+.md-math-block .MathJax_SVG_Display { text-align: center; margin: 0px; position: relative; text-indent: 0px; max-width: none; max-height: none; min-height: 0px; min-width: 100%; width: auto; overflow-y: hidden; display: block !important; }
+.MathJax_SVG_Display, .md-inline-math .MathJax_SVG_Display { width: auto; margin: inherit; display: inline-block !important; }
+.MathJax_SVG .MJX-monospace { font-family: var(--monospace); }
+.MathJax_SVG .MJX-sans-serif { font-family: sans-serif; }
+.MathJax_SVG { display: inline; font-style: normal; font-weight: 400; line-height: normal; zoom: 90%; text-indent: 0px; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; overflow-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0px; min-height: 0px; border: 0px; padding: 0px; margin: 0px; }
+.MathJax_SVG * { transition: none 0s ease 0s; }
+.MathJax_SVG_Display svg { vertical-align: middle !important; margin-bottom: 0px !important; margin-top: 0px !important; }
+.os-windows.monocolor-emoji .md-emoji { font-family: "Segoe UI Symbol", sans-serif; }
+.md-diagram-panel > svg { max-width: 100%; }
+[lang="mermaid"] svg, [lang="flow"] svg { max-width: 100%; height: auto; }
+[lang="mermaid"] .node text { font-size: 1rem; }
+table tr th { border-bottom: 0px; }
+video { max-width: 100%; display: block; margin: 0px auto; }
+iframe { max-width: 100%; width: 100%; border: none; }
+.highlight td, .highlight tr { border: 0px; }
+
+
+.CodeMirror { height: auto; }
+.CodeMirror.cm-s-inner { background: inherit; }
+.CodeMirror-scroll { overflow: auto hidden; z-index: 3; }
+.CodeMirror-gutter-filler, .CodeMirror-scrollbar-filler { background-color: rgb(255, 255, 255); }
+.CodeMirror-gutters { border-right: 1px solid rgb(221, 221, 221); background: inherit; white-space: nowrap; }
+.CodeMirror-linenumber { padding: 0px 3px 0px 5px; text-align: right; color: rgb(153, 153, 153); }
+.cm-s-inner .cm-keyword { color: rgb(119, 0, 136); }
+.cm-s-inner .cm-atom, .cm-s-inner.cm-atom { color: rgb(34, 17, 153); }
+.cm-s-inner .cm-number { color: rgb(17, 102, 68); }
+.cm-s-inner .cm-def { color: rgb(0, 0, 255); }
+.cm-s-inner .cm-variable { color: rgb(0, 0, 0); }
+.cm-s-inner .cm-variable-2 { color: rgb(0, 85, 170); }
+.cm-s-inner .cm-variable-3 { color: rgb(0, 136, 85); }
+.cm-s-inner .cm-string { color: rgb(170, 17, 17); }
+.cm-s-inner .cm-property { color: rgb(0, 0, 0); }
+.cm-s-inner .cm-operator { color: rgb(152, 26, 26); }
+.cm-s-inner .cm-comment, .cm-s-inner.cm-comment { color: rgb(170, 85, 0); }
+.cm-s-inner .cm-string-2 { color: rgb(255, 85, 0); }
+.cm-s-inner .cm-meta { color: rgb(85, 85, 85); }
+.cm-s-inner .cm-qualifier { color: rgb(85, 85, 85); }
+.cm-s-inner .cm-builtin { color: rgb(51, 0, 170); }
+.cm-s-inner .cm-bracket { color: rgb(153, 153, 119); }
+.cm-s-inner .cm-tag { color: rgb(17, 119, 0); }
+.cm-s-inner .cm-attribute { color: rgb(0, 0, 204); }
+.cm-s-inner .cm-header, .cm-s-inner.cm-header { color: rgb(0, 0, 255); }
+.cm-s-inner .cm-quote, .cm-s-inner.cm-quote { color: rgb(0, 153, 0); }
+.cm-s-inner .cm-hr, .cm-s-inner.cm-hr { color: rgb(153, 153, 153); }
+.cm-s-inner .cm-link, .cm-s-inner.cm-link { color: rgb(0, 0, 204); }
+.cm-negative { color: rgb(221, 68, 68); }
+.cm-positive { color: rgb(34, 153, 34); }
+.cm-header, .cm-strong { font-weight: 700; }
+.cm-del { text-decoration: line-through; }
+.cm-em { font-style: italic; }
+.cm-link { text-decoration: underline; }
+.cm-error { color: red; }
+.cm-invalidchar { color: red; }
+.cm-constant { color: rgb(38, 139, 210); }
+.cm-defined { color: rgb(181, 137, 0); }
+div.CodeMirror span.CodeMirror-matchingbracket { color: rgb(0, 255, 0); }
+div.CodeMirror span.CodeMirror-nonmatchingbracket { color: rgb(255, 34, 34); }
+.cm-s-inner .CodeMirror-activeline-background { background: inherit; }
+.CodeMirror { position: relative; overflow: hidden; }
+.CodeMirror-scroll { height: 100%; outline: 0px; position: relative; box-sizing: content-box; background: inherit; }
+.CodeMirror-sizer { position: relative; }
+.CodeMirror-gutter-filler, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-vscrollbar { position: absolute; z-index: 6; display: none; }
+.CodeMirror-vscrollbar { right: 0px; top: 0px; overflow: hidden; }
+.CodeMirror-hscrollbar { bottom: 0px; left: 0px; overflow: hidden; }
+.CodeMirror-scrollbar-filler { right: 0px; bottom: 0px; }
+.CodeMirror-gutter-filler { left: 0px; bottom: 0px; }
+.CodeMirror-gutters { position: absolute; left: 0px; top: 0px; padding-bottom: 30px; z-index: 3; }
+.CodeMirror-gutter { white-space: normal; height: 100%; box-sizing: content-box; padding-bottom: 30px; margin-bottom: -32px; display: inline-block; }
+.CodeMirror-gutter-wrapper { position: absolute; z-index: 4; background: 0px 0px !important; border: none !important; }
+.CodeMirror-gutter-background { position: absolute; top: 0px; bottom: 0px; z-index: 4; }
+.CodeMirror-gutter-elt { position: absolute; cursor: default; z-index: 4; }
+.CodeMirror-lines { cursor: text; }
+.CodeMirror pre { border-radius: 0px; border-width: 0px; background: 0px 0px; font-family: inherit; font-size: inherit; margin: 0px; white-space: pre; overflow-wrap: normal; color: inherit; z-index: 2; position: relative; overflow: visible; }
+.CodeMirror-wrap pre { overflow-wrap: break-word; white-space: pre-wrap; word-break: normal; }
+.CodeMirror-code pre { border-right: 30px solid transparent; width: fit-content; }
+.CodeMirror-wrap .CodeMirror-code pre { border-right: none; width: auto; }
+.CodeMirror-linebackground { position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px; z-index: 0; }
+.CodeMirror-linewidget { position: relative; z-index: 2; overflow: auto; }
+.CodeMirror-wrap .CodeMirror-scroll { overflow-x: hidden; }
+.CodeMirror-measure { position: absolute; width: 100%; height: 0px; overflow: hidden; visibility: hidden; }
+.CodeMirror-measure pre { position: static; }
+.CodeMirror div.CodeMirror-cursor { position: absolute; visibility: hidden; border-right: none; width: 0px; }
+.CodeMirror div.CodeMirror-cursor { visibility: hidden; }
+.CodeMirror-focused div.CodeMirror-cursor { visibility: inherit; }
+.cm-searching { background: rgba(255, 255, 0, 0.4); }
+@media print {
+    .CodeMirror div.CodeMirror-cursor { visibility: hidden; }
+}
+
+
+:root { --side-bar-bg-color: #fafafa; --control-text-color: #777; }
+html { font-size: 16px; }
+body { font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; color: rgb(51, 51, 51); line-height: 1.6; }
+#write { max-width: 860px; margin: 0px auto; padding: 30px 30px 100px; }
+#write > ul:first-child, #write > ol:first-child { margin-top: 30px; }
+a { color: rgb(65, 131, 196); }
+h1, h2, h3, h4, h5, h6 { position: relative; margin-top: 1rem; margin-bottom: 1rem; font-weight: bold; line-height: 1.4; cursor: text; }
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor { text-decoration: none; }
+h1 tt, h1 code { font-size: inherit; }
+h2 tt, h2 code { font-size: inherit; }
+h3 tt, h3 code { font-size: inherit; }
+h4 tt, h4 code { font-size: inherit; }
+h5 tt, h5 code { font-size: inherit; }
+h6 tt, h6 code { font-size: inherit; }
+h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: 1.2; border-bottom: 1px solid rgb(238, 238, 238); }
+h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: 1.225; border-bottom: 1px solid rgb(238, 238, 238); }
+h3 { font-size: 1.5em; line-height: 1.43; }
+h4 { font-size: 1.25em; }
+h5 { font-size: 1em; }
+h6 { font-size: 1em; color: rgb(119, 119, 119); }
+p, blockquote, ul, ol, dl, table { margin: 0.8em 0px; }
+li > ol, li > ul { margin: 0px; }
+hr { height: 2px; padding: 0px; margin: 16px 0px; background-color: rgb(231, 231, 231); border: 0px none; overflow: hidden; box-sizing: content-box; }
+li p.first { display: inline-block; }
+ul, ol { padding-left: 30px; }
+ul:first-child, ol:first-child { margin-top: 0px; }
+ul:last-child, ol:last-child { margin-bottom: 0px; }
+blockquote { border-left: 4px solid rgb(223, 226, 229); padding: 0px 15px; color: rgb(119, 119, 119); }
+blockquote blockquote { padding-right: 0px; }
+table { padding: 0px; word-break: initial; }
+table tr { border-top: 1px solid rgb(223, 226, 229); margin: 0px; padding: 0px; }
+table tr:nth-child(2n), thead { background-color: rgb(248, 248, 248); }
+table tr th { font-weight: bold; border-width: 1px 1px 0px; border-top-style: solid; border-right-style: solid; border-left-style: solid; border-top-color: rgb(223, 226, 229); border-right-color: rgb(223, 226, 229); border-left-color: rgb(223, 226, 229); border-image: initial; border-bottom-style: initial; border-bottom-color: initial; margin: 0px; padding: 6px 13px; }
+table tr td { border: 1px solid rgb(223, 226, 229); margin: 0px; padding: 6px 13px; }
+table tr th:first-child, table tr td:first-child { margin-top: 0px; }
+table tr th:last-child, table tr td:last-child { margin-bottom: 0px; }
+.CodeMirror-lines { padding-left: 4px; }
+.code-tooltip { box-shadow: rgba(0, 28, 36, 0.3) 0px 1px 1px 0px; border-top: 1px solid rgb(238, 242, 242); }
+.md-fences, code, tt { border: 1px solid rgb(231, 234, 237); background-color: rgb(248, 248, 248); border-radius: 3px; padding: 2px 4px 0px; font-size: 0.9em; }
+code { background-color: rgb(243, 244, 244); padding: 0px 2px; }
+.md-fences { margin-bottom: 15px; margin-top: 15px; padding-top: 8px; padding-bottom: 6px; }
+.md-task-list-item > input { margin-left: -1.3em; }
+@media print {
+    html { font-size: 13px; }
+    table, pre { break-inside: avoid; }
+    pre { overflow-wrap: break-word; }
+}
+.md-fences { background-color: rgb(248, 248, 248); }
+#write pre.md-meta-block { padding: 1rem; font-size: 85%; line-height: 1.45; background-color: rgb(247, 247, 247); border: 0px; border-radius: 3px; color: rgb(119, 119, 119); margin-top: 0px !important; }
+.mathjax-block > .code-tooltip { bottom: 0.375rem; }
+.md-mathjax-midline { background: rgb(250, 250, 250); }
+#write > h3.md-focus::before { left: -1.5625rem; top: 0.375rem; }
+#write > h4.md-focus::before { left: -1.5625rem; top: 0.285714rem; }
+#write > h5.md-focus::before { left: -1.5625rem; top: 0.285714rem; }
+#write > h6.md-focus::before { left: -1.5625rem; top: 0.285714rem; }
+.md-image > .md-meta { border-radius: 3px; padding: 2px 0px 0px 4px; font-size: 0.9em; color: inherit; }
+.md-tag { color: rgb(167, 167, 167); opacity: 1; }
+.md-toc { margin-top: 20px; padding-bottom: 20px; }
+.sidebar-tabs { border-bottom: none; }
+#typora-quick-open { border: 1px solid rgb(221, 221, 221); background-color: rgb(248, 248, 248); }
+#typora-quick-open-item { background-color: rgb(250, 250, 250); border-color: rgb(254, 254, 254) rgb(229, 229, 229) rgb(229, 229, 229) rgb(238, 238, 238); border-style: solid; border-width: 1px; }
+.on-focus-mode blockquote { border-left-color: rgba(85, 85, 85, 0.12); }
+header, .context-menu, .megamenu-content, footer { font-family: "Segoe UI", Arial, sans-serif; }
+.file-node-content:hover .file-node-icon, .file-node-content:hover .file-node-open-state { visibility: visible; }
+.mac-seamless-mode #typora-sidebar { background-color: var(--side-bar-bg-color); }
+.md-lang { color: rgb(180, 101, 77); }
+.html-for-mac .context-menu { --item-hover-bg-color: #E6F0FE; }
+#md-notification .btn { border: 0px; }
+.dropdown-menu .divider { border-color: rgb(229, 229, 229); }
+.ty-preferences .window-content { background-color: rgb(250, 250, 250); }
+.ty-preferences .nav-group-item.active { color: white; background: rgb(153, 153, 153); }
+
+
+</style>
+</head>
+<body class="typora-export os-windows">
+<div id="write" class="is-node"><h2><a name="概述" class="md-header-anchor"></a><span>概述</span></h2><p><span>本章节主要描述几个采购商向万惠充平台(下面称为万惠充)下单需要使用到的接口。采购商向万惠充提交订单, 万惠充异步处理订单, 待有订单结果后以结果回调的方式向客户推送订单结果。客户亦可主动发起结果查询主动询问万惠充有关订单情况。</span></p><h2><a name="api" class="md-header-anchor"></a><span>API</span></h2><h3><a name="提交订单" class="md-header-anchor"></a><span>提交订单</span></h3><p><span>采购商使用这个接口向万惠充发起下单并支付</span></p><h5><a name="请求" class="md-header-anchor"></a><span>请求</span></h5><p><span>使用 POST 发送请求, ContentType: </span>
+    <span>        </span></p><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang=""><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation"><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">ContentType: application/x-www-form-urlencoded;charset=utf-8</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 23px;"></div><div class="CodeMirror-gutters" style="display: none; height: 23px;"></div></div></div></pre><p><span>请求地址:</span></p><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang=""><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation"><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">http://api.wanhuichong.com/purchaser/order/place</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 23px;"></div><div class="CodeMirror-gutters" style="display: none; height: 23px;"></div></div></div></pre><p><span>请求参数:</span></p><table>
+    <tbody><tr>
+        <th>(^_^)</th>
+        <th>名称</th>
+        <th>类型</th>
+        <th>可选/必选</th>
+        <th>例子</th>
+        <th>说明</th>
+    </tr>
+    <tr>
+        <td rowspan="4">基本参数</td>
+        <td>userSerial</td>
+        <td>string</td>
+        <td>R</td>
+        <td>198383432</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>timestamp</td>
+        <td>uint(64)</td>
+        <td>R</td>
+        <td>1549497600123</td>
+        <td>毫秒数</td>
+    </tr>
+    <tr>
+        <td>sign</td>
+        <td>string</td>
+        <td>R</td>
+        <td>-</td>
+        <td>签名，详见签名规则</td>
+    </tr>
+    <tr>
+        <td>version</td>
+        <td>string</td>
+        <td>R</td>
+        <td>3.0</td>
+        <td>版本, 传 3.0</td>
+    </tr>
+    <tr>
+        <td rowspan="8">业务参数</td>
+        <td>outId</td>
+        <td>string</td>
+        <td>R</td>
+        <td>OO123456789</td>
+        <td>采购商为订单指定的唯一标识，必须唯一，最长支持长度为48</td>
+    </tr>
+    <tr>
+        <td>goodsId</td>
+        <td>string</td>
+        <td>O</td>
+        <td>G20190804123425123456</td>
+        <td>商品编号，详见下面关于向万惠充表明要购买的商品的说明</td>
+    </tr>
+    <tr>
+        <td>skuId</td>
+        <td>string</td>
+        <td>O</td>
+        <td>SKU20190804123425123456</td>
+        <td>sku编号，详见下面关于向万惠充表明要购买的商品的说明</td>
+    </tr>
+    <tr>
+        <td>outSkuId</td>
+        <td>string</td>
+        <td>O</td>
+        <td>S3432413214</td>
+        <td>外部的sku编号，由商品发布方规定。详见下面关于向万惠充表明要购买的商品的说明</td>
+    </tr>
+    <tr>
+        <td colspan="5">Attribute Fillings 系列参数，用于向万惠充提供一些有关要下单的商品的信息。详见下面关于 Attribute Fillings 的详细说明</td>
+    </tr>
+    <tr>
+        <td>serveTarget</td>
+        <td>string</td>
+        <td>O</td>
+        <td>13800138000</td>
+        <td>服务目标，比如话费充值时的充值手机号码. 如果下单的商品是服务型的则这个必传，是贩卖型的商品则没有意义</td>
+    </tr>
+    <tr>
+        <td>sellingPrice</td>
+        <td>uint(64)</td>
+        <td>O</td>
+        <td>98.8</td>
+        <td>售价。单位元，最多支持4位小数。 如果传入则用于核对. 如果核对失败则下单失败. </td>
+    </tr>
+    <tr>
+        <td>callbackUrl</td>
+        <td>string</td>
+        <td>O</td>
+        <td>http://www.aaaa.com/cb</td>
+        <td>回调地址. 用于接收异步的订单结果 如果传入了则优先使用(相对于配置的)</td>
+    </tr>
+    </tbody></table><h6><a name="向万惠充表明要购买的商品" class="md-header-anchor"></a><span>向万惠充表明要购买的商品</span></h6><p><span>采购商下单时，需要向万惠充表明要下单的有关商品信息，即买什么。简单来说即向万惠充表明要下单的是哪个 sku。这个通过 </span><code>goodsId</code><span>、</span><code>skuId</code><span>、</span><code>outSkuId</code><span> 和 Attribute Fillings 系列参数完成指定。向万惠充表明要下单的 sku 的方法可以总结为下列几种:</span></p><ul><li><span>通过 </span><code>skuId</code><span> 直接指定 sku.</span></li><li><span>通过 </span><code>goodsId</code><span> 和 </span><code>outSkuId</code><span> 指定 sku.</span></li><li><span>通过 </span><code>goodsId</code><span> 和足够的 Attribute Fillings 系列参数隐式指定 sku.</span></li></ul><p><span>如果提供的信息有多余的部分，比如  </span><code>skuId</code><span>, </span><code>goodsId</code><span> 和 </span><code>outSkuId</code><span> 都传入了则万惠充和核对所有信息是否一致，如果出现矛盾则下单失败。</span></p><h6><a name="attribute-fillings-系列参数" class="md-header-anchor"></a><span>Attribute Fillings 系列参数</span></h6><p><span>Attribute Fillings 系列参数是指一系列表示下单时针对产品的属性的值填充信息。比如话费充值时，你需要向万惠充表明你要充值的面值是多少。Attribute Fillings 系列参数的参数名统一为 </span><code>af.xxx</code><span>。根据业务类型不同，Attribute Fillings 系列参数的定义各不相同。</span></p><h6><a name="话费类型的-attribute-fillings-系列参数定义" class="md-header-anchor"></a><span>话费类型的 Attribute Fillings 系列参数定义</span></h6><figure><table><thead><tr><th><span>名称</span></th><th><span>类型</span></th><th><span>可选/必选</span></th><th><span>例子</span></th><th><span>说明</span></th></tr></thead><tbody><tr><td><span>af.face_value</span></td><td><span>uint(64)</span></td><td><span>O</span></td><td><span>100</span></td><td><span>话费充值的面值。仅在 sku 为固定面值，且有通过 skuId 或 outSkuId 指定 sku 时这个参数可以不传</span></td></tr><tr><td><span>af.operator</span></td><td><span>uint(32)</span></td><td><span>O</span></td><td><span>1</span></td><td><span>运营商。1表示移动，2表示联通，3表示电信。 由于可以通过号码归属地得知这些信息，这个参数一般不需要传入</span></td></tr><tr><td><span>af.province</span></td><td><span>string</span></td><td><span>O</span></td><td><span>广东</span></td><td><span>省份。传入如新疆、广西、广东、北京这样的简短的省份或直辖市名，不需要带'省'，'市'，'xxx族自治省'等的字眼。由于可以通过号码归属地得知这些信息，这个参数一般不需要传入</span></td></tr><tr><td><span>af.city</span></td><td><span>string</span></td><td><span>O</span></td><td><span>广州</span></td><td><span>市。传入如广州、武汉、北京这样的简短的市或直辖市名，不需要带'省'，'市'，'xxx族自治市'等的字眼。由于可以通过号码归属地得知这些信息，这个参数一般不需要传入</span></td></tr></tbody></table></figure><blockquote><p>❗️<span> 最简单常用的话费充值对接方式，只需传入 </span><code>goodsId</code><span> 指定商品，传入 </span><code>af.face_value</code><span> 指定面值即足以指定要下单的 sku，完成下单。</span></p></blockquote><h5><a name="返回" class="md-header-anchor"></a><span>返回</span></h5><p><span>返回内容为一个 JSON 对象, 以下是正常情况下的返回内容:</span></p><table>
+    <tbody><tr>
+        <th>(^_^)</th>
+        <th>名称</th>
+        <th>类型</th>
+        <th>可选/必选</th>
+        <th>例子</th>
+        <th>说明</th>
+    </tr>
+    <tr>
+        <td rowspan="3">基本参数</td>
+        <td>code</td>
+        <td>int(32)</td>
+        <td>R</td>
+        <td>0</td>
+        <td>结果代码</td>
+    </tr>
+    <tr>
+        <td>msg</td>
+        <td>string</td>
+        <td>R</td>
+        <td>OK</td>
+        <td>结果描述消息</td>
+    </tr>
+    <tr>
+        <td>content</td>
+        <td>object</td>
+        <td>R</td>
+        <td>-</td>
+        <td>详见下面"业务参数"</td>
+    </tr>
+    <tr>
+        <td rowspan="7">业务参数, <br>在 content<br> 对象里面</td>
+        <td>id</td>
+        <td>string</td>
+        <td>R</td>
+        <td>20190827328212390201</td>
+        <td>订单唯一标识, 万惠充平台颁发的唯一标识</td>
+    </tr>
+    <tr>
+        <td>outId</td>
+        <td>string</td>
+        <td>R</td>
+        <td>O1234567</td>
+        <td>由采购商提供的对订单的唯一编码. </td>
+    </tr>
+    <tr>
+        <td>serveTarget</td>
+        <td>string</td>
+        <td>O</td>
+        <td>13078420186</td>
+        <td>充值的服务目标，仅服务型的商品下单时有</td>
+    </tr>
+    <tr>
+        <td>bizClassSign</td>
+        <td>string</td>
+        <td>R</td>
+        <td>phone</td>
+        <td>业务类型</td>
+    </tr>
+    <tr>
+        <td>skuSnapshotId</td>
+        <td>string</td>
+        <td>R</td>
+        <td>SKU20200101101020134323</td>
+        <td>实际下单的 sku 的快照 id</td>
+    </tr>
+    <tr>
+        <td>sellingPrice</td>
+        <td>string</td>
+        <td>R</td>
+        <td>98.8000</td>
+        <td>订单实际价格, 如果请求时传入则必与请求时一致，4位小数</td>
+    </tr>
+    <tr>
+        <td>createTime</td>
+        <td>uint(64)</td>
+        <td>R</td>
+        <td>1586579446002</td>
+        <td>订单创建时间，毫秒</td>
+    </tr>
+    </tbody></table><h5><a name="可能出现的错误" class="md-header-anchor"></a><span>可能出现的错误</span></h5><figure><table><thead><tr><th><span>code</span></th><th><span>msg</span></th><th><span>说明</span></th></tr></thead><tbody><tr><td><span>40002</span></td><td><span>参数错误</span></td><td><span>请求参数不合法</span></td></tr><tr><td><span>40005</span></td><td><span>签名校验失败</span></td><td>&nbsp;</td></tr><tr><td><span>40003</span></td><td><span>请求过期</span></td><td><span>传入的 timestamp 与服务器时间相差太远</span></td></tr><tr><td><span>10219</span></td><td><span>服务目标有误</span></td><td><span>服务型商品下单时没有传入服务目标或服务目标不合法</span></td></tr><tr><td><span>10216</span></td><td><span>订单号重复</span></td><td><span>传入的 outId 重复</span></td></tr><tr><td><span>10214</span></td><td><span>订单创建失败，商品售价不符</span></td><td><span>传入的 sellingPrice 与万惠充核算的结果不一致</span></td></tr><tr><td><span>10202</span></td><td><span>商品信息有误</span></td><td><span>根据传入的 goodsId，skuId 等关于商品信息的参数无法确定要下单的 sku</span></td></tr><tr><td><span>20001</span></td><td><span>余额不足</span></td><td><span>采购商余额不足</span></td></tr><tr><td><span>10010</span></td><td><span>服务器正在维护</span></td><td><span>服务器正在维护，可作失败处理</span></td></tr><tr><td><span>10011</span></td><td><span>流控限制</span></td><td><span>接口请求频率超过限制，可作失败处理</span></td></tr><tr><td><span>10223</span></td><td><span>同服务目标超过每日限制次数</span></td><td><span>同服务目标超过每日限制次数，可作失败处理</span></td></tr></tbody></table></figure><h5><a name="样例" class="md-header-anchor"></a><span>样例</span></h5><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang="" style="break-inside: unset;"><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation" style=""><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">POST http://api.wanhuichong.com/purchaser/order/place</span></pre></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">userSerial=2342345342334678</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">timestamp=1586579446001</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">version=3.0</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">outId=OO212343212</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">goodsId=G21201112010402342343</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">af.faceValue=100</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">serveTarget=13400000001</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">sellingPrice=99.9</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">sign=34A324F32E23BC432346789341C432A3</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">响应:</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">{</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp;  "code": 0,</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp;  "msg": "成功",</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp;  "content": {</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp;  "id": "O20200318173757911037",</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp;  "outId": "O1234567",</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp;  "serveTarget": "13078420186",</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp;  "bizClassSign": "phone",</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp;  "skuSnapshotId": "SKU20201010342512342323",</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp;  "sellingPrice": "10.0000",</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp;  "createTime": "1586579446003"</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp;  }</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 759px;"></div><div class="CodeMirror-gutters" style="display: none; height: 759px;"></div></div></div></pre><h3><a name="结果查询" class="md-header-anchor"></a><span>结果查询</span></h3><p><span>采购商使用这个接口向万惠充查询订单情况</span></p><h5><a name="请求-n347" class="md-header-anchor"></a><span>请求</span></h5><p><span>使用 POST 发送请求, ContentType: </span>
+    <span>        </span></p><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang=""><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation"><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">ContentType: application/x-www-form-urlencoded;charset=utf-8</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 23px;"></div><div class="CodeMirror-gutters" style="display: none; height: 23px;"></div></div></div></pre><p><span>请求地址:</span></p><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang=""><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation"><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">http://api.wanhuichong.com/purchaser/order/query</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 23px;"></div><div class="CodeMirror-gutters" style="display: none; height: 23px;"></div></div></div></pre><p><span>请求参数:</span></p><table>
+    <tbody><tr>
+        <th>(^_^)</th>
+        <th>名称</th>
+        <th>类型</th>
+        <th>可选/必选</th>
+        <th>例子</th>
+        <th>说明</th>
+    </tr>
+    <tr>
+        <td rowspan="4">基本参数</td>
+        <td>userSerial</td>
+        <td>string</td>
+        <td>R</td>
+        <td>198383432</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>timestamp</td>
+        <td>uint(64)</td>
+        <td>R</td>
+        <td>1549497600123</td>
+        <td>毫秒数</td>
+    </tr>
+    <tr>
+        <td>sign</td>
+        <td>string</td>
+        <td>R</td>
+        <td>15143EF6771C51E22F5655C1D05C1548</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>version</td>
+        <td>string</td>
+        <td>R</td>
+        <td>3.0</td>
+        <td>版本, 传 3.0</td>
+    </tr>
+    <tr>
+        <td rowspan="2">业务参数</td>
+        <td>id</td>
+        <td>string</td>
+        <td>O</td>
+        <td>20190617133138014945</td>
+        <td>订单唯一标识, 万惠充平台颁发的唯一标识。id 或 outId 必须传入一个, id 优先</td>
+    </tr>
+    <tr>
+        <td>outId</td>
+        <td>string</td>
+        <td>O</td>
+        <td>OO123456789</td>
+        <td>采购商为订单颁发的唯一标识。id 或 outId 必须传入一个, id 优先</td>
+    </tr></tbody></table><h5><a name="返回-n354" class="md-header-anchor"></a><span>返回</span></h5><p><span>返回内容为一个 JSON 对象, 以下是正常情况下的返回内容:</span></p><table>
+    <tbody><tr>
+        <th>(^_^)</th>
+        <th>名称</th>
+        <th>类型</th>
+        <th>可选/必选</th>
+        <th>例子</th>
+        <th>说明</th>
+    </tr>
+    <tr>
+        <td rowspan="3">基本参数</td>
+        <td>code</td>
+        <td>int(32)</td>
+        <td>R</td>
+        <td>0</td>
+        <td>结果代码</td>
+    </tr>
+    <tr>
+        <td>msg</td>
+        <td>string</td>
+        <td>R</td>
+        <td>OK</td>
+        <td>结果描述消息</td>
+    </tr>
+    <tr>
+        <td>content</td>
+        <td>object</td>
+        <td>R</td>
+        <td></td>
+        <td>详见下面"业务参数"</td>
+    </tr>
+    <tr>
+        <td rowspan="10">业务参数, 在 content 对象里面</td>
+        <td>id</td>
+        <td>string</td>
+        <td>R</td>
+        <td>20190827328212390201</td>
+        <td>与请求时传入的 orderId 一致</td>
+    </tr>
+    <tr>
+        <td>outId</td>
+        <td>string</td>
+        <td>R</td>
+        <td>OO123456789</td>
+        <td>与请求时传入的 outId 一致。某些渠道下单时可能没有指定 outId，此时这个为 null</td>
+    </tr>
+    <tr>
+        <td>serveTarget</td>
+        <td>string</td>
+        <td>O</td>
+        <td>13800138000</td>
+        <td>与下单请求时的 serveTarget 一致，仅服务型商品的订单有</td>
+    </tr>
+    <tr>
+        <td>bizClassSign</td>
+        <td>string</td>
+        <td>R</td>
+        <td>phone</td>
+        <td>业务类型，话费充值等</td>
+    </tr>
+    <tr>
+        <td>skuSnapshotId</td>
+        <td>string</td>
+        <td>R</td>
+        <td>201902030432332</td>
+        <td>订单所购买的 sku 的快照的 id</td>
+    </tr>
+    <tr>
+        <td>sellingPrice</td>
+        <td>string</td>
+        <td>R</td>
+        <td>98.8000</td>
+        <td>订单的价格，4位小数</td>
+    </tr>
+    <tr>
+        <td>state</td>
+        <td>int(32)</td>
+        <td>R</td>
+        <td>4</td>
+        <td>订单当前状态，详见下面关于订单状态详细说明</td>
+    </tr>
+    <tr>
+        <td>createTime</td>
+        <td>uint(64)</td>
+        <td>R</td>
+        <td>1586579446002</td>
+        <td>订单创建时间，毫秒</td>
+    </tr>
+    <tr>
+        <td>vouchers</td>
+        <td>JSON Array</td>
+        <td>R</td>
+        <td>["2039432439394539493"]</td>
+        <td>订单凭证，根据业务类型不同而不同，可能是一个空的数组，一个 string 数组。仅在订单为完成时这个有值，其他情况为 null</td>
+    </tr>
+    <tr>
+        <td>virtualThingContents</td>
+        <td>JSON Array</td>
+        <td>O</td>
+        <td>["aew1233 123456"]</td>
+        <td>表示贩卖型商品的内容，仅贩卖型的商品的订单有。一个 string 数组，如果有则最少有 1 个数组元素。仅在订单为完成时这个有值，其他情况为 null</td>
+    </tr>
+    </tbody></table><h5><a name="订单状态说明" class="md-header-anchor"></a><span>订单状态说明</span></h5><p><span>万惠充订单的状态定义如下图所示:</span></p><p><img src="http://plantuml.com/plantuml/svg/RP9DIm916CVlyoa6lLImiBlsOXuyLD0bkaTqsDnH5rTNTZT28WWgIEXT0maBCgCkAOaGPEYNQSVjMpJZEEuiTjpdz__DFi_CapLq156-w9QWZfoKRHHTmoe09sSKYfgjvU6kbifbR6kleAzQfcN33IEJTRUGQLhxGifnDHV10m3XYcNho6RPDStEhTke10u1O0clVughxPzU3KRZSZeTbs42ofnzTl1jyxTw1AEKZ9Ya1A9tTUDtNmLH4SHgt_i-5aLr3F7xirT_ctBLmELCan6XXCrprZh7PzS2K2QjDZ_yxakeJnc0xRaTA2M56HDmHfa582X854_695WDuwGm9w4nHiS5BhDH2PuFusHuLX9O885GZPx0MYTqSOgo7mJ-4lt1f332x4e8YuUPUF0oHImOgYio1UnJCaEdAVIUnfVhjxkuTWcZV7l8MXKiKeyCUmE_t1dUdx24tsfu5tV-e8OxJxXU7lOg-B4UWPe3DnN-qa2IkFpLc9PPCynH-NC6Zbzv-CSPDSsS65yEkk5_" referrerpolicy="no-referrer" alt="万惠充订单的状态定义" title="万惠充订单的状态定义"></p><figure><table><thead><tr><th><span>state</span></th><th><span>state_desc</span></th><th><span>说明</span></th></tr></thead><tbody><tr><td><span>0</span></td><td><span>待支付</span></td><td><span>订单刚提交成功具有这个状态，等待支付</span></td></tr><tr><td><span>-1</span></td><td><span>已撤销</span></td><td><span>订单长时间不支付可能被撤销，也可以手动撤销，撤销后处于该状态</span></td></tr><tr><td><span>1</span></td><td><span>待发货</span></td><td><span>订单已支付等待发货</span></td></tr><tr><td><span>2</span></td><td><span>正在发货</span></td><td><span>正在进行发货</span></td></tr><tr><td><span>-2</span></td><td><span>已放弃</span></td><td><span>订单有采购方主动放弃</span></td></tr><tr><td><span>4</span></td><td><span>已发货</span></td><td><span>发货完成，等待采购方确认收货</span></td></tr><tr><td><span>10</span></td><td><span>完成</span></td><td><span>采购方已确认收货</span></td></tr><tr><td><span>-10</span></td><td><span>失败</span></td><td><span>失败已退款</span></td></tr></tbody></table></figure><h5><a name="可能出现的错误-n397" class="md-header-anchor"></a><span>可能出现的错误</span></h5><figure><table><thead><tr><th><span>code</span></th><th><span>msg</span></th><th><span>说明</span></th></tr></thead><tbody><tr><td><span>40002</span></td><td><span>参数错误</span></td><td><span>请求参数不合法</span></td></tr><tr><td><span>10109</span></td><td><span>签名校验失败</span></td><td>&nbsp;</td></tr><tr><td><span>40003</span></td><td><span>请求过期</span></td><td><span>传入的 timestamp 与服务器时间相差太远</span></td></tr><tr><td><span>10203</span></td><td><span>订单不存在</span></td><td><span>传入的 orderId 或 outId 查不到数据</span></td></tr><tr><td><span>10010</span></td><td><span>服务器正在维护</span></td><td><span>服务器正在维护,请稍后再试</span></td></tr><tr><td><span>10011</span></td><td><span>流控限制</span></td><td><span>接口请求频率超过限制，请稍后再试</span></td></tr></tbody></table></figure><h5><a name="样例-n428" class="md-header-anchor"></a><span>样例</span></h5><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang="" style="break-inside: unset;"><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation" style=""><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">POST http://api.wanhuichong.com/purchaser/order/query</span></pre></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">userSerial=2342345342334678</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">timestamp=1586579446001</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">version=3.0</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">id=O20191101102030234567</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">sign=34A324F32E23BC432346789341C432A3</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">响应:</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">{</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp;  "code": 0,</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp;  "msg": "成功",</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp;  "content": {</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp;  "id": "O20191101102030234567",</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp;  "outId": "O1234567",</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp;  "serveTarget": "13078420186",</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp;  "bizClassSign": "phone",</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp;  "skuSnapshotId": "20200229144641000001",</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp;  "sellingPrice": "10.0000",</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp;  "state": 2</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp;  }</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 575px;"></div><div class="CodeMirror-gutters" style="display: none; height: 575px;"></div></div></div></pre><h3><a name="结果回调" class="md-header-anchor"></a><span>结果回调</span></h3><p><span>万惠充通过结果回调的方式主动向采购方推送订单结果，当订单首次到达</span><code>已发货(4)</code><span>或</span><code>失败(-10)</code><span>时万惠充向采购方推送结果，当然前提是采购方有提供结果回调地址。下面说明关于结果回调的一些要点:</span></p><ul><li><span>回调地址可以同过两种方式告知万惠充，一是通过登录万惠充网站自行配置，二是下单时通过参数指定，详见下单接口</span></li><li><span>万惠充会重复尝试向采购商推送订单结果，最多尝试3次：立即推送/首次失败5分钟后推送/二次失败15分钟后推送</span></li><li><span>推送成功与失败以回应的 responseCode 为准，万惠充收到 200+（200~299） 的 responseCode 则认定为成功， 其他情况为失败, 推送成功后万惠充不再重复推送</span></li><li><span>为了您的财产安全，请</span><strong><span>务必</span></strong><span>校验签名，详见签名规则</span></li></ul><h5><a name="请求-n440" class="md-header-anchor"></a><span>请求</span></h5><p><span>使用 POST 发送请求, ContentType: </span>
+    <span>        </span></p><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang=""><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation"><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">ContentType: application/x-www-form-urlencoded;charset=utf-8</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 23px;"></div><div class="CodeMirror-gutters" style="display: none; height: 23px;"></div></div></div></pre><p><span>请求地址:</span></p><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang=""><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation"><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">由采购方提供</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 23px;"></div><div class="CodeMirror-gutters" style="display: none; height: 23px;"></div></div></div></pre><table>
+    <tbody><tr>
+        <th>(^_^)</th>
+        <th>名称</th>
+        <th>类型</th>
+        <th>可选/必选</th>
+        <th>例子</th>
+        <th>说明</th>
+    </tr>
+    <tr>
+        <td rowspan="4">基本参数</td>
+        <td>userSerial</td>
+        <td>string</td>
+        <td>R</td>
+        <td>198383432</td>
+        <td>用户在万惠充平台的唯一标识</td>
+    </tr>
+    <tr>
+        <td>timestamp</td>
+        <td>uint(64)</td>
+        <td>R</td>
+        <td>1549497600123</td>
+        <td>毫秒数</td>
+    </tr>
+    <tr>
+        <td>sign</td>
+        <td>string</td>
+        <td>R</td>
+        <td>15143EF6771C51E22F5655C1D05C1548</td>
+        <td>加密串</td>
+    </tr>
+    <tr>
+        <td>version</td>
+        <td>string</td>
+        <td>R</td>
+        <td>3.0</td>
+        <td>版本, 传 3.0</td>
+    </tr>
+    <tr>
+        <td rowspan="10">业务参数</td>
+        <td>id</td>
+        <td>string</td>
+        <td>R</td>
+        <td>20190617113456485776</td>
+        <td>万惠充平台订单唯一编号</td>
+    </tr>
+    <tr>
+        <td>outId</td>
+        <td>string</td>
+        <td>R</td>
+        <td>OO123456789</td>
+        <td>与请求时传入的 outId 一致。某些渠道下单时可能没有指定 outId，此时这个为 null</td>
+    </tr>
+    <tr>
+        <td>serveTarget</td>
+        <td>string</td>
+        <td>O</td>
+        <td>13800138000</td>
+        <td>与下单请求时的 serveTarget 一致，仅服务型商品的订单有</td>
+    </tr>
+    <tr>
+        <td>bizClassSign</td>
+        <td>string</td>
+        <td>R</td>
+        <td>phone</td>
+        <td>业务类型，话费充值等</td>
+    </tr>
+    <tr>
+        <td>skuSnapshotId</td>
+        <td>string</td>
+        <td>R</td>
+        <td>201902030432332</td>
+        <td>订单所购买的 sku 的快照的 id</td>
+    </tr>
+    <tr>
+        <td>sellingPrice</td>
+        <td>string</td>
+        <td>R</td>
+        <td>98.8000</td>
+        <td>订单的价格，4位小数</td>
+    </tr>
+    <tr>
+        <td>state</td>
+        <td>int(32)</td>
+        <td>R</td>
+        <td>4</td>
+        <td>订单当前状态，详见<a href="#结果查询">结果查询</a>有关状态的说明</td>
+    </tr>
+    <tr>
+        <td>createTime</td>
+        <td>uint(64)</td>
+        <td>R</td>
+        <td>1586579446002</td>
+        <td>订单创建时间，毫秒</td>
+    </tr>
+    <tr>
+        <td>vouchers</td>
+        <td>JSON Array</td>
+        <td>R</td>
+        <td>["2039432439394539493"]</td>
+        <td>订单凭证，根据业务类型不同而不同，可能是一个空的数组，一个 string 数组。仅在订单为完成时这个有值，其他情况没有值</td>
+    </tr>
+    <tr>
+        <td>virtualThingContents</td>
+        <td>JSON Array</td>
+        <td>O</td>
+        <td>["aew1233 123456"]</td>
+        <td>表示贩卖型商品的内容，仅贩卖型的商品的订单有。一个 string 数组，如果有则最少有 1 个数组元素。仅在订单为完成时这个有值，其他情况没有值</td>
+    </tr>
+    </tbody></table><h5><a name="样例-n447" class="md-header-anchor"></a><span>样例</span></h5><p><span>请求 Body 的内容：</span></p><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded md-focus" lang="" style="break-inside: unset;"><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 161px; left: 16.6719px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation" style=""><div class="" style="position: relative;"><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">userSerial=193384343</span></pre></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">version=3.0</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">timestamp=14548232938543</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">id=20190501120303123456</span></pre><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">outId=OO12345</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">serveTarget=13645328578</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">bizClassSign=phone</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">skuSnapshotId=S20181010123456123456</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">sellingPrice=98.9</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">state=10</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">createTime=14548232938543</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">&amp;</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">vouchers=%5b%222019234343872813492845794342475%22%5d</span></pre></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 529px;"></div><div class="CodeMirror-gutters" style="display: none; height: 529px;"></div></div></div></pre><p>&nbsp;</p></div>
+
+</body></html>

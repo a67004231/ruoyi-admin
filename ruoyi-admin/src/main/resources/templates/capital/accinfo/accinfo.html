@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('capitalAccInfo列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>账户类型：</label>
+                                <select name="status" th:with="type=${@dict.getType('capital_acc_type')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>公司：</label>
+                                <select name="companyId">
+                                    <option value="">所有</option>
+                                    <option th:each="company : ${companyList}" th:text="${company.companyName}" th:value="${company.id}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>通道：</label>
+                                <select name="channelId" class="form-control m-b">
+                                    <option value="">所有</option>
+                                    <option th:each="channel : ${channelList}" th:text="${channel.channelName}" th:value="${channel.id}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>商户：</label>
+                                <select name="merId" class="form-control m-b">
+                                    <option value="">所有</option>
+                                    <option th:each="mer : ${merList}" th:text="${mer.merName}" th:value="${mer.id}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>账户：</label>
+                                <input type="text" name="capitalAccNo"/>
+                            </li>
+                            <li>
+                                <label>账户名：</label>
+                                <input type="text" name="capitalAccName"/>
+                            </li>
+
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="capital:accinfo:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <!--<a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="capital:accinfo:edit">-->
+                    <!--<i class="fa fa-edit"></i> 修改-->
+                <!--</a>-->
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="capital:accinfo:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="capital:accinfo:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('capital:accinfo:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('capital:accinfo:remove')}]];
+        var prefix = ctx + "capital/accinfo";
+        var statusDatas = [[${@dict.getType('capital_acc_type')}]];
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "capitalAccInfo",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'id',
+                    title: '',
+                    visible: false
+                },
+                {
+                    field: 'type',
+                    title: '类型',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(statusDatas, value);
+                    }
+                },
+                {
+                    field: 'companyName',
+                    title: '公司名',
+                },
+                {
+                    field: 'channelName',
+                    title: '通道名'
+                },
+                {
+                    field: 'merName',
+                    title: '商户名'
+                },
+                {
+                    field: 'capitalAccNo',
+                    title: '付款账户'
+                },
+                {
+                    field: 'capitalAccName',
+                    title: '付款账户名'
+                },
+                {
+                    field: 'status',
+                    title: '状态',
+                    visible: false
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

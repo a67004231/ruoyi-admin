@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.channel.mapper.ChannelStockMapper">
+    
+    <resultMap type="ChannelStock" id="ChannelStockResult">
+        <result property="id"    column="id"    />
+        <result property="channelCode"    column="channel_code"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="amt"    column="amt"    />
+        <result property="stockNum"    column="stock_num"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectChannelStockVo">
+        select id, channel_code, channel_name, amt/100 amt, stock_num, create_time, update_time, status from channel_stock
+    </sql>
+
+    <select id="selectChannelStockList" parameterType="ChannelStock" resultMap="ChannelStockResult">
+        <include refid="selectChannelStockVo"/>
+        <where>  
+        	and create_time >=NOW()-INTERVAL 30 MINUTE 
+            <if test="channelCode != null  and channelCode != ''"> and channel_code = #{channelCode}</if>
+            <if test="channelName != null  and channelName != ''"> and channel_name like concat('%', #{channelName}, '%')</if>
+            <if test="amt != null "> and amt = #{amt}</if>
+            <if test="stockNum != null "> and stock_num = #{stockNum}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectChannelStockById" parameterType="Long" resultMap="ChannelStockResult">
+        <include refid="selectChannelStockVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertChannelStock" parameterType="ChannelStock" useGeneratedKeys="true" keyProperty="id">
+        insert into channel_stock
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="channelCode != null and channelCode != ''">channel_code,</if>
+            <if test="channelName != null and channelName != ''">channel_name,</if>
+            <if test="amt != null">amt,</if>
+            <if test="stockNum != null">stock_num,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="channelCode != null and channelCode != ''">#{channelCode},</if>
+            <if test="channelName != null and channelName != ''">#{channelName},</if>
+            <if test="amt != null">#{amt},</if>
+            <if test="stockNum != null">#{stockNum},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChannelStock" parameterType="ChannelStock">
+        update channel_stock
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="channelCode != null and channelCode != ''">channel_code = #{channelCode},</if>
+            <if test="channelName != null and channelName != ''">channel_name = #{channelName},</if>
+            <if test="amt != null">amt = #{amt},</if>
+            <if test="stockNum != null">stock_num = #{stockNum},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChannelStockById" parameterType="Long">
+        delete from channel_stock where id = #{id}
+    </delete>
+
+    <delete id="deleteChannelStockByIds" parameterType="String">
+        delete from channel_stock where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.capital.mapper.CapitalInfoMapper">
+    
+    <resultMap type="CapitalInfo" id="CapitalInfoResult">
+        <result property="id"    column="id"    />
+        <result property="successAmt"    column="success_amt"    />
+        <result property="unpaidAmt"    column="unpaid_amt"    />
+        <result property="paidAmt"    column="paid_amt"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="status"    column="status"    />
+        <result property="merId"    column="mer_id"    />
+        <result property="merName"    column="mer_name"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="companyName"    column="company_name"    />
+    </resultMap>
+
+    <sql id="selectCapitalInfoVo">
+        select id, success_amt, unpaid_amt, paid_amt, update_time, status, mer_id, mer_name, channel_id, channel_name from capital_info
+    </sql>
+    <!--<sql id="selectCapitalInfoVo">-->
+        <!--SELECT a.channel_id, IFNULL(ROUND(sum(a.amt)/100,2),0) as success_amt,IFNULL(ROUND(sum(a.sys_act_amt)/100,2),0)as unpaid_amt,-->
+        <!--(SELECT IFNULL(sum(amt),0) from capital_pay_log where to_days(create_time)=to_days(now()) and mer_id=1 and channel_id = a.channel_id )as paid_amt,-->
+        <!--NOW() as update_time,-->
+        <!--(SELECT channel_name from channel_info where id=channel_id)as channel_name,-->
+        <!--(SELECT mer_name from mer_info where id=a.mer_id)as mer_name-->
+        <!--from order_info a-->
+        <!--where DATE_SUB(CURDATE(), INTERVAL 3 DAY) &lt;= date(a.result_time) and a.status=2 and a.mer_id= #{merId GROUP BY a.channel_id,a.channel_code-->
+    <!--</sql>-->
+    <select id="selectCapitalInfoToday" parameterType="CapitalInfo" resultMap="CapitalInfoResult">
+        SELECT a.company_id,a.mer_id, IFNULL(ROUND(sum(a.amt)/100,2),0) as success_amt,IFNULL(ROUND(sum(a.sys_act_amt)/100,2),0)as unpaid_amt,
+        (SELECT IFNULL(sum(amt),0) from capital_pay_log where  to_days(create_time)=to_days(now()) and type=1 and mer_id=a.mer_id and company_id = a.company_id )as paid_amt,
+        NOW() as update_time,
+        (SELECT company_name from company_info where id=company_id)as company_name,
+        (SELECT mer_name from mer_info where id=a.mer_id)as mer_name
+        from order_info a
+        where to_days(a.result_time)=to_days(now()) and a.status=2
+        <if test="merId != null">and a.mer_id = #{merId}</if>
+        <if test="companyId != null">and a.company_id = #{companyId}</if>
+        <if test="startTime != null "> and a.create_time &gt;= #{startTime}</if>
+        <if test="endTime != null "> and a.create_time &lt;= #{endTime}</if>
+        GROUP BY a.company_id,a.mer_id
+    </select>
+    <select id="selectCapitalInfoList" parameterType="CapitalInfo" resultMap="CapitalInfoResult">
+        SELECT a.company_id,a.mer_id, IFNULL(ROUND(sum(a.amt)/100,2),0) as success_amt,IFNULL(ROUND(sum(a.sys_act_amt)/100,2),0)as unpaid_amt,
+        (SELECT IFNULL(sum(amt),0) from capital_pay_log where  type=1 and mer_id=a.mer_id and company_id = a.company_id )as paid_amt,
+        NOW() as update_time,
+        (SELECT company_name from company_info where id=company_id)as company_name,
+        (SELECT mer_name from mer_info where id=a.mer_id)as mer_name
+        from order_info a
+        where a.status=2
+        <if test="merId != null">and a.mer_id = #{merId}</if>
+        <if test="companyId != null">and a.company_id = #{companyId}</if>
+        <if test="startTime != null "> and a.create_time &gt;= #{startTime}</if>
+        <if test="endTime != null "> and a.create_time &lt;= #{endTime}</if>
+        GROUP BY a.company_id,a.mer_id
+    </select>
+    <select id="selectCapitalList" parameterType="CapitalInfo" resultMap="CapitalInfoResult">
+        <include refid="selectCapitalInfoVo"/>
+
+        <where>
+            <if test="merId != null "> and mer_id = #{merId}</if>
+            <if test="channelId != null "> and channel_id = #{channelId}</if>
+            <if test="successAmt != null "> and success_amt = #{successAmt}</if>
+            <if test="unpaidAmt != null "> and unpaid_amt = #{unpaidAmt}</if>
+            <if test="paidAmt != null "> and paid_amt = #{paidAmt}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="merName != null  and merName != ''"> and mer_name like concat('%', #{merName}, '%')</if>
+            <if test="channelName != null  and channelName != ''"> and channel_name like concat('%', #{channelName}, '%')</if>
+        </where>
+    </select>
+    <select id="selectCapitalInfoListLog" parameterType="CapitalInfo" resultMap="CapitalInfoResult">
+        SELECT a.channel_id, IFNULL(ROUND(sum(a.amt)/100,2),0) as success_amt,IFNULL(ROUND(sum(a.sys_act_amt)/100,2),0)as unpaid_amt,
+        (SELECT IFNULL(sum(amt),0) from capital_pay_log where date(create_time) = date_sub(curdate(),interval 1 day) and
+         mer_id=#{merId} and channel_id = a.channel_id and status=1 )as paid_amt,
+        NOW() as update_time,
+        (SELECT channel_name from channel_info where id=channel_id)as channel_name,
+        (SELECT mer_name from mer_info where id=a.mer_id)as mer_name
+        from order_info a
+        where date(a.result_time) = date_sub(curdate(),interval 1 day) and a.status=2 and a.mer_id= #{merId} GROUP BY a.channel_id,a.channel_code
+    </select>
+    <select id="selectCapitalByYes" parameterType="CapitalInfo" resultMap="CapitalInfoResult">
+        SELECT a.company_id,a.mer_id, IFNULL(ROUND(sum(a.amt)/100,2),0) as success_amt,IFNULL(ROUND(sum(a.sys_act_amt)/100,2),0)as unpaid_amt,
+        (SELECT IFNULL(sum(amt),0) from capital_pay_log where  date(create_time) = date_sub(curdate(),interval 1 day) and type=1 and mer_id=a.mer_id and company_id = a.company_id )as paid_amt,
+        NOW() as update_time,
+        (SELECT company_name from company_info where id=company_id)as company_name,
+        (SELECT mer_name from mer_info where id=a.mer_id)as mer_name
+        from order_info a
+        where date(a.result_time) = date_sub(curdate(),interval 1 day) and a.status=2
+        <if test="merId != null">and a.mer_id = #{merId}</if>
+        <if test="companyId != null">and a.company_id = #{companyId}</if>
+        <if test="startTime != null "> and a.create_time &gt;= #{startTime}</if>
+        <if test="endTime != null "> and a.create_time &lt;= #{endTime}</if>
+        GROUP BY a.company_id,a.mer_id
+    </select>
+    <select id="selectCapitalByChannelYes" parameterType="CapitalInfo" resultMap="CapitalInfoResult">
+        SELECT #{channelId} as channel_id,#{merId} as mer_id, IFNULL(ROUND(sum(a.amt)/100,2),0) as success_amt,IFNULL(ROUND(sum(a.sys_act_amt)/100,2),0)as unpaid_amt,
+        IFNULL((SELECT sum(amt) from capital_pay_log where date(create_time) = date_sub(curdate(),interval 1 day) and
+         mer_id=#{merId} and channel_id = #{channelId} and status=1),0)as paid_amt,
+        NOW() as update_time,
+        (SELECT channel_name from channel_info where id=#{channelId})as channel_name,
+        (SELECT mer_name from mer_info where id=#{merId})as mer_name
+        from order_info a
+        where date(a.result_time) = date_sub(curdate(),interval 1 day) and a.status=2 and a.mer_id= #{merId} and a.channel_id=#{channelId}
+    </select>
+    <select id="selectCapitalInfoById" parameterType="Long" resultMap="CapitalInfoResult">
+        <include refid="selectCapitalInfoVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectByMerIdAndChannelId" parameterType="CapitalInfo" resultMap="CapitalInfoResult">
+        <include refid="selectCapitalInfoVo"/>
+        where channel_id = #{channelId} and mer_id=#{merId} and status = #{status}
+    </select>
+    <insert id="insertCapitalInfo" parameterType="CapitalInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into capital_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="successAmt != null">success_amt,</if>
+            <if test="unpaidAmt != null">unpaid_amt,</if>
+            <if test="paidAmt != null">paid_amt,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="status != null">status,</if>
+            <if test="merId != null">mer_id,</if>
+            <if test="merName != null">mer_name,</if>
+            <if test="channelId != null">channel_id,</if>
+            <if test="channelName != null">channel_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="successAmt != null">#{successAmt},</if>
+            <if test="unpaidAmt != null">#{unpaidAmt},</if>
+            <if test="paidAmt != null">#{paidAmt},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="merId != null">#{merId},</if>
+            <if test="merName != null">#{merName},</if>
+            <if test="channelId != null">#{channelId},</if>
+            <if test="channelName != null">#{channelName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCapitalInfo" parameterType="CapitalInfo">
+        update capital_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="successAmt != null">success_amt = #{successAmt},</if>
+            <if test="unpaidAmt != null">unpaid_amt = #{unpaidAmt},</if>
+            <if test="paidAmt != null">paid_amt = #{paidAmt},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="merId != null">mer_id = #{merId},</if>
+            <if test="merName != null">mer_name = #{merName},</if>
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="channelName != null">channel_name = #{channelName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCapitalInfoById" parameterType="Long">
+        delete from capital_info where id = #{id}
+    </delete>
+
+    <delete id="deleteCapitalInfoByIds" parameterType="String">
+        delete from capital_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

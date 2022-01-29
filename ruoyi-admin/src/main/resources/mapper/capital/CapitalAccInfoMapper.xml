@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.capital.mapper.CapitalAccInfoMapper">
+    
+    <resultMap type="CapitalAccInfo" id="CapitalAccInfoResult">
+        <result property="id"    column="id"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="merId"    column="mer_id"    />
+        <result property="merName"    column="mer_name"    />
+        <result property="capitalAccNo"    column="capital_acc_no"    />
+        <result property="capitalAccName"    column="capital_acc_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="status"    column="status"    />
+        <result property="type"    column="type"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="companyName"    column="company_name"    />
+    </resultMap>
+
+    <sql id="selectCapitalAccInfoVo">
+        select id, channel_id,company_id, company_name,channel_name, mer_id, mer_name, capital_acc_no, capital_acc_name, create_time, update_time, status, type from capital_acc_info
+    </sql>
+    <select id="selectComListByMerId" parameterType="CapitalAccInfo" resultMap="CapitalAccInfoResult">
+        <include refid="selectCapitalAccInfoVo"/>
+        <where>
+          company_id in (SELECT company_id from mer_info where id = #{merId}) and type=3 and status =1
+        </where>
+    </select>
+    <select id="selectChannelListByComId" parameterType="CapitalAccInfo" resultMap="CapitalAccInfoResult">
+        <include refid="selectCapitalAccInfoVo"/>
+        <where>
+            channel_id in (SELECT company_id from channel_info where company_id = #{companyId}) and type=2 and status =1
+        </where>
+    </select>
+    <select id="selectCapitalAccInfoList" parameterType="CapitalAccInfo" resultMap="CapitalAccInfoResult">
+        <include refid="selectCapitalAccInfoVo"/>
+        <where>  
+            <if test="channelId != null "> and channel_id = #{channelId}</if>
+            <if test="channelName != null  and channelName != ''"> and channel_name like concat('%', #{channelName}, '%')</if>
+            <if test="merId != null "> and mer_id = #{merId}</if>
+            <if test="merName != null  and merName != ''"> and mer_name like concat('%', #{merName}, '%')</if>
+            <if test="capitalAccNo != null  and capitalAccNo != ''"> and capital_acc_no = #{capitalAccNo}</if>
+            <if test="capitalAccName != null  and capitalAccName != ''"> and capital_acc_name like concat('%', #{capitalAccName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="companyId != null "> and company_id = #{companyId}</if>
+            <if test="companyName != null "> and company_name = #{companyName}</if>
+        </where>
+    </select>
+    
+    <select id="selectCapitalAccInfoById" parameterType="Long" resultMap="CapitalAccInfoResult">
+        <include refid="selectCapitalAccInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCapitalAccInfo" parameterType="CapitalAccInfo">
+        insert into capital_acc_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="channelId != null">channel_id,</if>
+            <if test="channelName != null">channel_name,</if>
+            <if test="merId != null">mer_id,</if>
+            <if test="merName != null">mer_name,</if>
+            <if test="capitalAccNo != null">capital_acc_no,</if>
+            <if test="capitalAccName != null">capital_acc_name,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="status != null">status,</if>
+            <if test="type != null">type,</if>
+            <if test="companyId != null">company_id,</if>
+            <if test="companyName != null">company_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="channelId != null">#{channelId},</if>
+            <if test="channelName != null">#{channelName},</if>
+            <if test="merId != null">#{merId},</if>
+            <if test="merName != null">#{merName},</if>
+            <if test="capitalAccNo != null">#{capitalAccNo},</if>
+            <if test="capitalAccName != null">#{capitalAccName},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="type != null">#{type},</if>
+            <if test="companyId != null">#{companyId},</if>
+            <if test="companyName != null">#{companyName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCapitalAccInfo" parameterType="CapitalAccInfo">
+        update capital_acc_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="channelName != null">channel_name = #{channelName},</if>
+            <if test="merId != null">mer_id = #{merId},</if>
+            <if test="merName != null">mer_name = #{merName},</if>
+            <if test="capitalAccNo != null">capital_acc_no = #{capitalAccNo},</if>
+            <if test="capitalAccName != null">capital_acc_name = #{capitalAccName},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="companyId != null">company_id = #{companyId},</if>
+            <if test="companyName != null">company_name = #{companyName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCapitalAccInfoById" parameterType="Long">
+        delete from capital_acc_info where id = #{id}
+    </delete>
+
+    <delete id="deleteCapitalAccInfoByIds" parameterType="String">
+        delete from capital_acc_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

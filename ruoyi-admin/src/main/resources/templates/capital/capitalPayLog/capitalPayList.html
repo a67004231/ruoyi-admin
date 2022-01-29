@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('资金转账列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>创建时间：</label>
+                                <input type="text" class="time-input" placeholder="请选择开始时间" name="startTime"/>
+                                <span>到</span>
+                                <input type="text" class="time-input" placeholder="请选择结束时间" name="endTime"/>
+                            </li>
+
+                            <li th:if="${type} eq 1">
+                                <label>公司：</label>
+                                <select name="channelId" class="form-control m-b">
+                                    <option value="">所有</option>
+                                    <option th:each="company : ${companyList}" th:text="${company.companyName}" th:value="${company.companyId}"></option>
+                                </select>
+                            </li>
+                            <li th:if="${type} eq 2">
+                                <label>商户：</label>
+                                <select name="merId" class="form-control m-b">
+                                    <option value="">所有</option>
+                                    <option th:each="mer : ${merList}" th:text="${mer.merName}" th:value="${mer.merId}"></option>
+                                </select>
+                            </li>
+                            <li th:if="${type} eq 3">
+                                <label>公司：</label>
+                                <select name="companyId" class="form-control m-b">
+                                    <option value="">所有</option>
+                                    <option th:each="company : ${companyList}" th:text="${company.companyName}" th:value="${company.id}"></option>
+                                </select>
+                            </li>
+                            <li th:if="${type} eq 3">
+                                <label>商户：</label>
+                                <select name="merId" class="form-control m-b">
+                                    <option value="">所有</option>
+                                    <option th:each="mer : ${merList}" th:text="${mer.merName}" th:value="${mer.id}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>状态：</label>
+                                <select name="status" th:with="type=${@dict.getType('amt_audit_status')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="capital:capitalPayLog:add">
+                    <i class="fa fa-plus"></i> 申请
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="capital:capitalPayLog:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <!--<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="capital:capitalPayLog:remove">-->
+                    <!--<i class="fa fa-remove"></i> 删除-->
+                <!--</a>-->
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="capital:capitalPayLog:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var viewFlag = [[${@permission.hasPermi('capital:capitalPayLog:view')}]];
+        var editFlag = [[${@permission.hasPermi('capital:capitalPayLog:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('capital:capitalPayLog:remove')}]];
+        var statusDatas = [[${@dict.getType('amt_audit_status')}]];
+        var prefix = ctx + "capital/capitalPayLog";
+        function audit(id) {
+            $.modal.open("审核", prefix+"/audit/"+id,800,800);
+        }
+        function detail(id) {
+            $.operate.detail(id,800,800);
+        }
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "资金转账列表",
+                showFooter: true,
+                footerStyle: footerStyle,
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'id',
+                    title: '',
+                    visible: false
+                },
+                {
+                    field: 'createTime',
+                    title: '创建时间'
+                },
+                {
+                    field: 'auditTime',
+                    title: '审核时间'
+                },
+                {
+                    field: 'merId',
+                    title: '商户id',
+                    visible: false
+                },
+                {
+                    field: 'merName',
+                    title: '商户名'
+                },
+                {
+                    field: 'companyId',
+                    title: '公司id',
+                    visible: false
+                },
+                {
+                    field: 'companyName',
+                    title: '公司名'
+                },
+                {
+                    field: 'amt',
+                    title: '金额',
+                    footerFormatter:function (value) {
+                        var sumAmt = 0;
+                        for (var i in value) {
+                            sumAmt += parseFloat(value[i].amt);
+                        }
+                        return "总金额：" + sumAmt.toFixed(2);
+                    }
+                },
+                {
+                    field: 'status',
+                    title: '状态',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(statusDatas, value);
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        if(row.status==0){
+                            actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="audit(\'' + row.id + '\')"><i class="fa fa-"></i>审核</a> ');
+                        }
+
+                        actions.push('<a class="btn btn-success btn-xs ' + viewFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-search"></i>详情</a> ');
+
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+        function footerStyle(column) {
+            return {
+                amt: {
+                    css: { color: 'red', 'font-weight': 'normal' }
+                }
+            }[column.field]
+        }
+    </script>
+</body>
+</html>

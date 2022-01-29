@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.merchant.mapper.MerInfoMapper">
+    
+    <resultMap type="MerInfo" id="MerInfoResult">
+        <result property="id"    column="id"    />
+        <result property="merNo"    column="mer_no"    />
+        <result property="merName"    column="mer_name"    />
+        <result property="merShortName"    column="mer_short_name"    />
+        <result property="merType"    column="mer_type"    />
+        <result property="userId"    column="user_id"    />
+        <result property="tel"    column="tel"    />
+        <result property="telHash"    column="tel_hash"    />
+        <result property="telDisplay"    column="tel_display"    />
+        <result property="email"    column="email"    />
+        <result property="emailHash"    column="email_hash"    />
+        <result property="emailDisplay"    column="email_display"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="status"    column="status"    />
+        <result property="md5key"    column="md5_key"    />
+        <result property="creditAmt"    column="credit_amt"    />
+        <result property="creditUseAmt"    column="credit_use_amt"    />
+        <result property="creditBalanceAmt"    column="credit_balance_amt"    />
+        <result property="creditFixAmt"    column="credit_fix_amt"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="companyName"    column="company_name"    />
+    </resultMap>
+
+    <sql id="selectMerInfoVo">
+        select m.id, m.mer_no, m.mer_name, m.mer_short_name, m.mer_type, m.user_id, m.tel, m.tel_hash, m.tel_display,
+         m.email, m.email_hash, m.email_display, m.create_time, m.update_time, m.status,s.md5_key,m.user_id,a.credit_amt,
+         a.credit_use_amt,a.credit_balance_amt,a.credit_fix_amt,c.company_name,c.id as company_id
+        from mer_info m left join mer_secret_key s on m.id =s.mer_id left join mer_account a on m.id=a.mer_id
+        left join company_info c on c.id=m.company_id
+    </sql>
+
+    <select id="selectMerInfoList" parameterType="MerInfo" resultMap="MerInfoResult">
+        <include refid="selectMerInfoVo"/>
+        <where>  
+            <if test="merNo != null  and merNo != ''"> and m.mer_no = #{merNo}</if>
+            <if test="merName != null  and merName != ''"> and m.mer_name like concat('%', #{merName}, '%')</if>
+            <if test="merShortName != null  and merShortName != ''"> and m.mer_short_name like concat('%', #{merShortName}, '%')</if>
+            <if test="merType != null "> and m.mer_type = #{merType}</if>
+            <if test="status != null "> and m.status = #{status}</if>
+            <if test="id != null "> and m.id = #{id}</if>
+            <if test="companyId != null "> and m.company_id = #{companyId}</if>
+        </where>
+    </select>
+    
+    <select id="selectMerInfoById" parameterType="Long" resultMap="MerInfoResult">
+        <include refid="selectMerInfoVo"/>
+        where m.id = #{id}
+    </select>
+    <select id="selectMerInfoByMerNo" parameterType="String" resultMap="MerInfoResult">
+        <include refid="selectMerInfoVo"/>
+        where m.mer_no = #{merNo}
+    </select>
+        
+    <insert id="insertMerInfo" parameterType="MerInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into mer_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="merNo != null and merNo != ''">mer_no,</if>
+            <if test="merName != null and merName != ''">mer_name,</if>
+            <if test="merShortName != null and merShortName != ''">mer_short_name,</if>
+            <if test="merType != null">mer_type,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="tel != null">tel,</if>
+            <if test="telHash != null">tel_hash,</if>
+            <if test="telDisplay != null">tel_display,</if>
+            <if test="email != null">email,</if>
+            <if test="emailHash != null">email_hash,</if>
+            <if test="emailDisplay != null">email_display,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="status != null">status,</if>
+            <if test="companyId != null">company_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="merNo != null and merNo != ''">#{merNo},</if>
+            <if test="merName != null and merName != ''">#{merName},</if>
+            <if test="merShortName != null and merShortName != ''">#{merShortName},</if>
+            <if test="merType != null">#{merType},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="telHash != null">#{telHash},</if>
+            <if test="telDisplay != null">#{telDisplay},</if>
+            <if test="email != null">#{email},</if>
+            <if test="emailHash != null">#{emailHash},</if>
+            <if test="emailDisplay != null">#{emailDisplay},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="companyId != null">#{companyId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMerInfo" parameterType="MerInfo">
+        update mer_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="merNo != null and merNo != ''">mer_no = #{merNo},</if>
+            <if test="merName != null and merName != ''">mer_name = #{merName},</if>
+            <if test="merShortName != null and merShortName != ''">mer_short_name = #{merShortName},</if>
+            <if test="merType != null">mer_type = #{merType},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="tel != null">tel = #{tel},</if>
+            <if test="telHash != null">tel_hash = #{telHash},</if>
+            <if test="telDisplay != null">tel_display = #{telDisplay},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="emailHash != null">email_hash = #{emailHash},</if>
+            <if test="emailDisplay != null">email_display = #{emailDisplay},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="companyId != null">company_id = #{companyId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMerInfoById" parameterType="Long">
+        delete from mer_info where id = #{id}
+    </delete>
+
+    <delete id="deleteMerInfoByIds" parameterType="String">
+        delete from mer_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

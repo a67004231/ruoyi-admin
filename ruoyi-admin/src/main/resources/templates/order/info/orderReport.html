@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<script th:src="@{/js/laydate/laydate.js}"></script>
+<head>
+    <th:block th:include="include :: header('充值通道订单列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                        	<li>
+                                <label style="width: 80px">开始时间：</label>
+                                <input type="text" class="time-input  test-item" th:value="${startTime}" placeholder="请选择创建时间" name="createTime"/>
+                            </li>
+                            <li>
+                                <label style="width: 80px">结束时间：</label>
+                                <input type="text" class="time-input  test-item" th:value="${endTime}"  placeholder="请选择结果时间" name="resultTime"/>
+                            </li>
+                            <li>
+                                <label style="width: 80px">商户：</label>
+                                <select name="merId" class="form-control m-b">
+                                    <option value="">所有</option>
+                                    <option th:each="mer : ${merList}" th:text="${mer.merName}" th:value="${mer.id}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('order:info:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('order:info:remove')}]];
+        var statusDatas = [[${@dict.getType('order_status')}]];
+        var noticeStatusDatas = [[${@dict.getType('notify_status')}]];
+        var productTypeDatas = [[${@dict.getType('product_type')}]];
+        var channelDatas = [[${@dict.getType('order_channel_name')}]];
+        var prefix = ctx + "order/info";
+		var noticeUrl= prefix+"/noticeAgain";
+		var statusUrl= prefix+"/statusAgain";
+        function sreachLog(sysOrderNo) {
+            $.modal.open("查看历史记录", prefix+"/searchLog/"+sysOrderNo,1200,600);
+        }
+        $(function() {
+            var options = {
+                url: prefix + "/listReport",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "充值通道订单",
+                showSearch: false,
+		        showRefresh: false,
+		        showToggle: false,
+		        showColumns: false,
+		        clickToSelect: true,
+		        rememberSelected: true,
+                columns: [{
+                	field: 'state',
+                    checkbox: true
+                },
+                {
+                    field: 'date',
+                    title: '时间'
+                },
+                {
+                    field: 'count',
+                    title: '订单数量'
+                },
+                {
+                    field: 'serviceName',
+                    title: '运营商'
+                },
+                {
+                    field: 'amt',
+                    title: '充值面额',
+                    formatter: function(value, row, index) {
+                           return row.amt/100;
+                    }
+                }
+                ]
+            };
+            $.table.init(options);
+        });
+        function notifySelected() {
+        	var userIds = $.table.selectColumns("id");
+        	var dataParam = $("#export-form").serializeArray();
+        	var tipMsg = "确定补发所有数据吗？";
+        	if($.common.isNotEmpty(userIds)){
+        		tipMsg = "确定补发勾选" + userIds.length + "条数据吗？";
+        		dataParam.push({ "name": "ids", "value": userIds });
+        	}
+        	$.modal.confirm(tipMsg, function() {
+        		alert(userIds);
+        		$.post(noticeUrl,dataParam,function(result){
+    				if(result=='success'){
+    					alert("通知已补发");
+    				}else{
+    					alert("系统异常");
+    				}
+    			   
+    			  });
+        	});
+        }
+        function statusSelected() {
+        	var userIds = $.table.selectColumns("id");
+        	var dataParam = $("#export-form").serializeArray();
+        	var tipMsg = "确定同步所有数据吗？";
+        	if($.common.isNotEmpty(userIds)){
+        		tipMsg = "确定同步勾选" + userIds.length + "条数据吗？";
+        		dataParam.push({ "name": "ids", "value": userIds });
+        	}
+        	$.modal.confirm(tipMsg, function() {
+        		$.post(statusUrl,dataParam,function(result){
+    				if(result=='success'){
+    					alert("状态以同步");
+    				}else{
+    					alert("系统异常");
+    				}
+    			   
+    			  });
+        	});
+        }
+        function notice(id){
+			$.post(noticeUrl,{ids:id},function(result){
+				if(result=='success'){
+					alert("通知已补发");
+				}else{
+					alert("系统异常");
+				}
+			   
+			  });	  
+		}
+        function asynStatus(id){
+			$.post(statusUrl,{ids:id},function(result){
+				if(result=='success'){
+					alert("状态已同步，请稍后查询订单");
+				}else{
+					alert("系统异常");
+				}
+			  });	  
+		}
+    </script>
+    <script>
+		//执行一个laydate实例
+		lay('.test-item').each(function(){
+			  laydate.render({
+			    elem: this
+			    ,trigger: 'click'
+			    	,type: 'datetime'
+			  });
+			});
+	</script>
+</body>
+</html>

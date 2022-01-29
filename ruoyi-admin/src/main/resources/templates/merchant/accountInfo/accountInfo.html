@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('商户账户列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li th:if="${type} ne 1">
+                            <label>商户：</label>
+                                <select name="merId">
+                                	<option value="">全部</option>
+			                        <option th:each="mer : ${merInfoList}" th:text="${mer.merName}" th:value="${mer.id}"></option>
+			                    </select>
+                            </li>
+                            <li th:if="${type} ne 1">
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('merchant:accountInfo:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('merchant:accountInfo:remove')}]];
+        var statusDatas = [[${@dict.getType('all_status')}]];
+        var prefix = ctx + "merchant/accountInfo";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "商户账户",
+                columns: [
+                {
+                    field: 'id',
+                    title: '',
+                    visible: false
+                },
+                {
+                    field: 'merName',
+                    title: '商户'
+                },
+                {
+                    field: 'creditAmt',
+                    title: '授信总金额'
+                },
+                {
+                    field: 'creditUseAmt',
+                    title: '已使用授信额度'
+                },
+                {
+                    field: 'creditBalanceAmt',
+                    title: '授信余额'
+                },
+                {
+                    field: 'creditFixAmt',
+                    title: '处理中授信资金'
+                },
+                {
+                    field: 'status',
+                    title: '账户状态',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(statusDatas, value);
+                    }
+                }
+                ]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

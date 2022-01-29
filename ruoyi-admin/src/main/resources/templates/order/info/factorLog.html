@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('通道路由日志列表')" />
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId"  th:object="${orderInfo}">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <input type="text" name="sysOrderNo" th:field="*{sysOrderNo}" style="display:none"/>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('factor:factorLog:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('factor:factorLog:remove')}]];
+    var prefix = ctx + "factor/factorLog";
+
+    $(function() {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "通道路由日志",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: '',
+                    visible: false
+                },
+                {
+                    field: 'step',
+                    title: '步骤'
+                },
+                {
+                    field: 'createTime',
+                    title: '创建时间'
+                },
+                {
+                    field: 'sysOrderNo',
+                    title: '系统订单号'
+                },
+                {
+                    field: 'merOrderNo',
+                    title: '商户订单号'
+                },
+                {
+                    field: 'tel',
+                    title: '电话'
+                },
+
+                {
+                    field: 'merNo',
+                    title: '商户号'
+                },
+
+                {
+                    field: 'channelCode',
+                    title: '通道号'
+                },
+
+                {
+                    field: 'total',
+                    title: '总分'
+                },
+                {
+                    field: 'rate',
+                    title: '费率'
+                },
+                {
+                    field: 'amt',
+                    title: '金额'
+                },
+                {
+                    field: 'factorName',
+                    title: '因子名'
+                },
+
+                {
+                    field: 'value',
+                    title: '因子值'
+                },
+                {
+                    field: 'minData',
+                    title: '最小值'
+                },
+                {
+                    field: 'maxData',
+                    title: '最大值'
+                },
+                {
+                    field: 'weight',
+                    title: '权重'
+                },
+                {
+                    field: 'lastChannel',
+                    title: '最终通道'
+                }]
+        };
+        $.table.init(options);
+    });
+</script>
+</body>
+</html>

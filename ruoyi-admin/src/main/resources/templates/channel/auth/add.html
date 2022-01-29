@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增通道产品授权')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-auth-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">通道ID：</label>
+                <div class="col-sm-8">
+                    <select name="channelId" class="form-control m-b">
+                        <option th:each="channel : ${infoList}" th:text="${channel.channelCode}" th:value="${channel.id}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">产品类型：</label>
+                <div class="col-sm-8">
+                    <select name="productType" id="productType" onchange="productOneList()" class="form-control m-b" th:with="type=${@dict.getType('product_type')}" required>
+                    	<option value="">全部</option>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">一类产品：</label>
+                <div class="col-sm-8">
+                    <select name="productOne" id="productOne" onchange="productTwoList()" class="form-control m-b">
+                        <option value="">全部</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">二类产品：</label>
+                <div class="col-sm-8">
+                    <select name="productTwo" id="productTwo" class="form-control m-b">
+                        <option value="">全部</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "channel/auth"
+        var profix=  ctx+ "product/info";
+        $("#form-auth-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-auth-add').serialize());
+            }
+        }
+        function productOneList() {
+        	$.ajax({
+				url: profix + "/productOneList",
+				type: 'GET',
+				data: {
+					parentCode: $("#productType").val(),
+				},
+				success:function (data) {
+					$("#productOne").empty();
+					$("#productTwo").empty();
+					$("#productOne").append("<option value=''>全部</option>");
+					$("#productTwo").append("<option value=''>全部</option>");
+					for (var i = 0; i < data.length; i++){
+						$("#productOne").append("<option value='" + data[i].code + "'>" + data[i].name + "</option>");
+					}
+				}
+			});
+        }
+        function productTwoList() {
+   			$.ajax({
+   				url: profix + "/productTwoList",
+   				type: 'GET',
+   				data: {
+   					parentOneCode: $("#productOne").val(),
+   				},
+   				success:function (data) {
+   					$("#productTwo").empty();
+   					$("#productTwo").append("<option value=''>全部</option>");
+   					for (var i = 0; i < data.length; i++){
+   						$("#productTwo").append("<option value='" + data[i].code + "'>" + data[i].name + "</option>");
+   					}
+   				}
+   			})
+        }
+    </script>
+</body>
+</html>
